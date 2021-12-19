@@ -6,21 +6,9 @@ internal class Deck : MonoBehaviour
 {
     private const int CardsInDeck = 104;
     
-    private Card[] _cards;
-    
-    private void Awake()
+    public Card[] CreateDeck()
     {
-        CreateDeck();
-
-        foreach (Card card in _cards)
-        {
-            Debug.Log(card.ToString());
-        }
-    }
-
-    private void CreateDeck()
-    {
-        _cards = new Card[CardsInDeck];
+        Card[] cards = new Card[CardsInDeck];
 
         int i = 0;
         foreach (Suit suit in Enum.GetValues(typeof(Suit)))
@@ -29,9 +17,11 @@ internal class Deck : MonoBehaviour
             {
                 Card card = new Card(value, suit);
                 
-                _cards[i++] = card;
-                _cards[i++] = card;
+                cards[i++] = card;
+                cards[i++] = card;
             }
         }
+
+        return cards;
     }
 }
