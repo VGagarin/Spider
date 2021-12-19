@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -10,6 +14,9 @@ namespace DefaultNamespace
         [SerializeField] private float _distanceBetweenColumns = 0.8f;
         [SerializeField] private float _smallVerticalOffset = 0.3f;
         [SerializeField] private float _largeVerticalOffset = 0.5f;
+        [SerializeField] private float _delayBetweenCardsWhenDealing = 0.05f;
+        [SerializeField] private float _cardSpeed = 1f;
+        [SerializeField] private Ease _easing;
         
         [SerializeField] private CardView _cardView;
         [SerializeField] private Deck _deck;
@@ -18,6 +25,8 @@ namespace DefaultNamespace
         private List<CardView>[] _gameField;
         private List<CardView> _views;
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         private void Start()
         {
             Card[] cards = _deck.CreateDeck();
@@ -25,6 +34,11 @@ namespace DefaultNamespace
             CreateCardViews(cards);
             InitializeGameField();
             Deal(transform.position);
+        }
+
+        private void OnDestroy()
+        {
+            _cancellationTokenSource?.Cancel();
         }
 
         private void CreateCardViews(Card[] cards)
@@ -52,6 +66,13 @@ namespace DefaultNamespace
 
         private void Deal(Vector3 startPosition)
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+            
+            for (int i = 0; i < _views.Count; i++)
+            {
+                _views[i].transform.position = _waitingStack.position;
+            }
+
             const int cardsToDeal = 54;
             const int cardsToOpen = 10;
 
@@ -64,16 +85,31 @@ namespace DefaultNamespace
                 float yOffset = rowIndex * _smallVerticalOffset;
                 Vector3 offset = new Vector3(xOffset, yOffset, 0);
 
-                _views[i].transform.position = startPosition + offset;
                 _gameField[columnIndex].Add(_views[i]);
+
+                float delay = _delayBetweenCardsWhenDealing * i;
+                MoveToPositionAfterDelay(delay, startPosition + offset, _views[i].transform);
                 
                 if (cardsToDeal - i <= cardsToOpen)
                     _views[i].ShowCard();
             }
+        }
 
-            for (int i = cardsToDeal; i < _views.Count; i++)
+        private async void MoveToPositionAfterDelay(float delay, Vector3 target, Transform card)
+        {
+            try
             {
-                _views[i].transform.position = _waitingStack.position;
+                await Task.Delay(TimeSpan.FromSeconds(delay), _cancellationTokenSource.Token);
+
+                float duration = Vector3.Distance(target, card.position) / _cardSpeed;
+
+                card
+                    .DOMove(target, duration)
+                    .SetEase(_easing);
+            }
+            catch (OperationCanceledException)
+            {
+                card?.DOKill();
             }
         }
     }

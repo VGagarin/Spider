@@ -311,6 +311,9 @@ MonoBehaviour:
   _distanceBetweenColumns: 0.55
   _smallVerticalOffset: 0.2
   _largeVerticalOffset: 0.5
+  _delayBetweenCardsWhenDealing: 0.05
+  _cardSpeed: 1
+  _easing: 4
   _cardView: {fileID: 6092842748433298263, guid: abcb64bac081bcf43b1bcbe042c7d5d6, type: 3}
   _deck: {fileID: 319431781}
   _waitingStack: {fileID: 213544675}
