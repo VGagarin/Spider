@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using DefaultNamespace;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 internal class Deck : MonoBehaviour
 {
@@ -22,6 +24,10 @@ internal class Deck : MonoBehaviour
             }
         }
 
+        Shuffle(ref cards);
+
         return cards;
     }
+
+    private void Shuffle(ref Card[] cards) => cards = cards.OrderBy(card => Random.value).ToArray();
 }
