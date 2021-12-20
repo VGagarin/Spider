@@ -68,10 +68,8 @@ namespace DefaultNamespace
         {
             _cancellationTokenSource = new CancellationTokenSource();
             
-            for (int i = 0; i < _views.Count; i++)
-            {
-                _views[i].transform.position = _waitingStack.position;
-            }
+            foreach (CardView view in _views)
+                view.transform.position = _waitingStack.position;
 
             const int cardsToDeal = 54;
             const int cardsToOpen = 10;
@@ -79,13 +77,15 @@ namespace DefaultNamespace
             for (int i = 0; i < cardsToDeal; i++)
             {
                 int columnIndex = i % Columns;
-                int rowIndex = -(i / Columns);
+                int rowIndex = i / Columns;
                 
                 float xOffset = columnIndex * _distanceBetweenColumns;
-                float yOffset = rowIndex * _smallVerticalOffset;
+                float yOffset = -rowIndex * _smallVerticalOffset;
                 Vector3 offset = new Vector3(xOffset, yOffset, 0);
 
                 _gameField[columnIndex].Add(_views[i]);
+                
+                _views[i].SetLayer(rowIndex);
 
                 float delay = _delayBetweenCardsWhenDealing * i;
                 MoveToPositionAfterDelay(delay, startPosition + offset, _views[i].transform);
