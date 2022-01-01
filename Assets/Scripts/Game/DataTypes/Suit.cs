@@ -1,4 +1,4 @@
-﻿namespace Spider
+﻿namespace Game.DataTypes
 {
     internal enum Suit
     {

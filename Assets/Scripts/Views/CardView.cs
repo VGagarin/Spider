@@ -1,5 +1,6 @@
 ﻿using System;
-using Spider;
+using Game.DataTypes;
+using UI;
 using UnityEngine;
 using ViewModels;
 

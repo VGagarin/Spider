@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Spider
+namespace Game.DataTypes
 {
     [Serializable]
     internal struct Card : IEqualityComparer<Card>

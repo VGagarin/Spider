@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Game.DataTypes;
 using UnityEngine;
 
-namespace Spider
+namespace UI
 {
     [CreateAssetMenu(fileName = "CardSprites", menuName = "Visual/CardSprites")]
     internal sealed class CardSprites : ScriptableObject

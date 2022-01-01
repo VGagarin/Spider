@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DG.Tweening;
-using Game;
+using Game.DataTypes;
 using UnityEngine;
 using Views;
 
-namespace Spider
+namespace Game
 {
     internal sealed class Dealer : MonoBehaviour
     {

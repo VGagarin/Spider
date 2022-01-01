@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Spider;
+using Game.DataTypes;
 using Random = UnityEngine.Random;
 
 namespace Game

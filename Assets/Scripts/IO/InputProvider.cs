@@ -2,7 +2,7 @@
 using UnityEngine;
 using Views;
 
-namespace Spider
+namespace IO
 {
     internal sealed class InputProvider : MonoBehaviour
     {
