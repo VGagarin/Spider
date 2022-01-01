@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using Spider;
+using UnityEngine;
+using ViewModels;
 
-namespace DefaultNamespace
+namespace Views
 {
-    internal sealed class CardView : MonoBehaviour
+    internal sealed class CardView : BaseView<CardViewModel>
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private CardSprites _cardSprites;
@@ -11,7 +14,7 @@ namespace DefaultNamespace
         private int _layer;
 
         public int Layer => _layer;
-        
+
         public void SetCard(Card card)
         {
             _card = card;

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
+using Views;
 
-namespace DefaultNamespace
+namespace Spider
 {
     internal sealed class InputProvider : MonoBehaviour
     {

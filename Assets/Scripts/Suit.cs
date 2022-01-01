@@ -1,4 +1,4 @@
-﻿namespace DefaultNamespace
+﻿namespace Spider
 {
     internal enum Suit
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Spider
 {
     [CreateAssetMenu(fileName = "CardSprites", menuName = "Visual/CardSprites")]
     internal sealed class CardSprites : ScriptableObject

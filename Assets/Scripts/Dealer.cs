@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DG.Tweening;
+using Game;
 using UnityEngine;
+using Views;
 
-namespace DefaultNamespace
+namespace Spider
 {
     internal sealed class Dealer : MonoBehaviour
     {
@@ -19,7 +21,6 @@ namespace DefaultNamespace
         [SerializeField] private Ease _easing;
         
         [SerializeField] private CardView _cardView;
-        [SerializeField] private Deck _deck;
         [SerializeField] private Transform _waitingStack;
 
         private List<CardView>[] _gameField;
@@ -29,7 +30,7 @@ namespace DefaultNamespace
 
         private void Start()
         {
-            Card[] cards = _deck.CreateDeck();
+            Card[] cards = Deck.CreateDeck();
 
             CreateCardViews(cards);
             InitializeGameField();
@@ -49,7 +50,9 @@ namespace DefaultNamespace
             
             foreach (Card card in cards)
             {
+                Debug.Log("строчка до инстанса");
                 CardView cardView = Instantiate(_cardView, parent);
+                Debug.Log("строчка после инстанса");
                 cardView.SetCard(card);
                 
                 _views.Add(cardView);
