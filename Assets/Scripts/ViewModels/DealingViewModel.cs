@@ -1,5 +1,6 @@
 ﻿using Game;
 using Game.Model;
+using Game.Settings;
 using Models;
 using Models.Base;
 using UnityEngine;
@@ -9,11 +10,17 @@ namespace ViewModels
 {
     internal class DealingViewModel : BaseViewModel
     {
+        private readonly DealingSettings _dealingSettings;
+        private readonly GameRules _gameRules;
+        
         public Vector3 MainZonePosition { get; set; }
         
         public DealingViewModel()
         {
             ModelRepository.GetModel<CardsModel>().DeckCreated += OnDeckCreated;
+            
+            _dealingSettings = SpiderSettings.DealingSettings;
+            _gameRules = SpiderSettings.GameRules;
         }
 
         private void OnDeckCreated(Deck deck)
@@ -23,27 +30,20 @@ namespace ViewModels
 
         private void Deal(Deck deck, Vector3 mainZonePosition)
         {
-            const int cardsToDeal = 54;
-            const int cardsToOpen = 10;
-            const int columns = 10;
-            const float distanceBetweenColumns = 0.55f;
-            const float smallVerticalOffset = 0.2f;
-            const float delayBetweenCardsWhenDealing = 0.05f;
-            
             Card[] cards = deck.Cards;
 
             CardsModel cardsModel = ModelRepository.GetModel<CardsModel>();
 
-            for (int i = 0; i < cardsToDeal; i++)
+            for (int i = 0; i < _gameRules.CardsToDeal; i++)
             {
-                int columnIndex = i % columns;
-                int rowIndex = i / columns;
+                int columnIndex = i % _gameRules.Columns;
+                int rowIndex = i / _gameRules.Columns;
 
-                float xOffset = columnIndex * distanceBetweenColumns;
-                float yOffset = -rowIndex * smallVerticalOffset;
+                float xOffset = columnIndex * _dealingSettings.DistanceBetweenColumns;
+                float yOffset = -rowIndex * _dealingSettings.SmallVerticalOffset;
                 Vector3 offset = new Vector3(xOffset, yOffset, 0);
 
-                float delay = delayBetweenCardsWhenDealing * i;
+                float delay = _dealingSettings.DelayBetweenCardsDeal * i;
 
                 CardMoveData moveData = new CardMoveData
                 {
@@ -55,7 +55,7 @@ namespace ViewModels
                     ColumnIndex = columnIndex
                 };
 
-                if (cardsToDeal - i <= cardsToOpen)
+                if (_gameRules.CardsToDeal - i <= _gameRules.CardsToOpen)
                     moveData.TargetStateIsOpen = true;
 
                 cardsModel.MoveCard(moveData);

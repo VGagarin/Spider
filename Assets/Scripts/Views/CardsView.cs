@@ -2,6 +2,7 @@
 using DG.Tweening;
 using Game;
 using Game.Model;
+using Game.Settings;
 using GeneralPurpose;
 using UnityEngine;
 using ViewModels;
@@ -13,8 +14,6 @@ namespace Views
     {
         [SerializeField] private CardSubview _cardSubview;
         [SerializeField] private Transform _createPoint;
-        [SerializeField] private float _cardSpeed;
-        [SerializeField] private Ease _easing;
         
         private readonly Dictionary<int, CardSubview> _cardSubviewById = new Dictionary<int, CardSubview>();
         private List<CardSubview> _views;
@@ -22,7 +21,8 @@ namespace Views
 
         protected override void Initialize()
         {
-            _cardMover = new CardMover(_cardSpeed, _easing);
+            DealingSettings settings = SpiderSettings.DealingSettings;
+            _cardMover = new CardMover(settings.CardSpeed, settings.Easing);
             
             _viewModel.DeckCreated += OnDeckCreated;
             _viewModel.CardMoved += OnCardMoved;
@@ -47,13 +47,14 @@ namespace Views
             Vector3 targetPosition = moveData.TargetPosition;
             Transform cardTransform = card.transform;
             
+            if (moveData.TargetStateIsOpen)
+                card.ShowCard();
+            
             InsertAction insertAction = new InsertAction
             {
                 Action = () =>
                 {
                     card.SetLayer(moveData.TargetLayer);
-                    if (moveData.TargetStateIsOpen)
-                        card.ShowCard();
                 },
                 RelativeTime = 0.3f
             };
@@ -74,9 +75,8 @@ namespace Views
 
                 _cardSubviewById[cards[i].Id] = cardSubview;
                 _views.Add(cardSubview);
-                
-                const int cardsToFirstDeal = 54;
-                
+
+                int cardsToFirstDeal = SpiderSettings.GameRules.CardsToDeal;
                 cardSubview.SetLayer(i <= cardsToFirstDeal ? cardsToFirstDeal - i : -i);
             }
         }
