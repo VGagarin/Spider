@@ -15,6 +15,7 @@ namespace Views.Cards
         private int _cardId;
         
         public int CardId => _cardId;
+        public bool IsMovable { get; set; }
         
         public int Layer
         {
@@ -37,6 +38,7 @@ namespace Views.Cards
             Sprite sprite = _cardSprites.GetCardSprite(_card);
             
             _spriteRenderer.sprite = sprite;
+            IsMovable = true;
         }
     }
 }

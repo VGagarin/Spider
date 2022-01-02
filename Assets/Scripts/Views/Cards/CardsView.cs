@@ -78,6 +78,9 @@ namespace Views.Cards
         
         private void OnCapturedCardUpdated(int cardId)
         {
+            if (!_cardSubviewById[cardId].IsMovable)
+                return;
+            
             _attachedSubview = _cardSubviewById[cardId];
             _attachedSubview.Layer += SpiderSettings.GameRules.CardsInDeck;
 
@@ -88,6 +91,9 @@ namespace Views.Cards
 
         private void OnReleasedCardUpdated(int cardId)
         {
+            if (_attachedSubview == null) 
+                return;
+            
             _cardMover.MoveToPositionAfterDelay(0, _startPosition, _attachedSubview.transform);
             _attachedSubview.Layer -= SpiderSettings.GameRules.CardsInDeck;
             _attachedSubview = null;
