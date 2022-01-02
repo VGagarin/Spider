@@ -14,7 +14,6 @@ namespace ViewModels
         private readonly DealingSettings _dealingSettings;
         private readonly GameRules _gameRules;
 
-        public Vector3 MainZonePosition { get; set; }
         public Transform[] ControlPoints { get; set; }
         
         public DealingViewModel()
