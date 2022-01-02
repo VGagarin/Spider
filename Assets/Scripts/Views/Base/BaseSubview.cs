@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Views
+namespace Views.Base
 {
     internal abstract class BaseSubview<T> : MonoBehaviour where T: IView
     {

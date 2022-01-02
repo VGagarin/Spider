@@ -1,4 +1,4 @@
-﻿namespace Views
+﻿namespace Views.Base
 {
     internal interface IView { }
 }

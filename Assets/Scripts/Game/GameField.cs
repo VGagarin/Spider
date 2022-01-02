@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.DataTypes;
+using Game.Model;
 
 namespace Game
 {

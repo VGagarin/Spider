@@ -1,4 +1,5 @@
 ﻿using System;
+using Models.Base;
 using UnityEngine;
 
 namespace Models

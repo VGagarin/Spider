@@ -1,6 +1,7 @@
 ﻿using System;
 using Game;
-using Game.DataTypes;
+using Game.Model;
+using Models.Base;
 
 namespace Models
 {

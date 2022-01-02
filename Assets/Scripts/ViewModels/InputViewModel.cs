@@ -1,5 +1,7 @@
 ﻿using Models;
+using Models.Base;
 using UnityEngine;
+using ViewModels.Base;
 
 namespace ViewModels
 {

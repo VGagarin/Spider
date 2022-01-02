@@ -1,7 +1,9 @@
 ﻿using System;
 using Game;
-using Game.DataTypes;
+using Game.Model;
 using Models;
+using Models.Base;
+using ViewModels.Base;
 
 namespace ViewModels
 {

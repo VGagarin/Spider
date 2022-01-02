@@ -1,7 +1,8 @@
 ﻿using System;
+using Game.DataTypes;
 using UnityEngine;
 
-namespace Game.DataTypes
+namespace Game.Model
 {
     [Serializable]
     internal struct Card

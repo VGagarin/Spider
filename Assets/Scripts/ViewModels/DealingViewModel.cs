@@ -1,7 +1,9 @@
 ﻿using Game;
-using Game.DataTypes;
+using Game.Model;
 using Models;
+using Models.Base;
 using UnityEngine;
+using ViewModels.Base;
 
 namespace ViewModels
 {

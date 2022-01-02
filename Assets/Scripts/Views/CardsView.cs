@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using Game;
-using Game.DataTypes;
+using Game.Model;
 using UnityEngine;
 using ViewModels;
+using Views.Base;
 
 namespace Views
 {

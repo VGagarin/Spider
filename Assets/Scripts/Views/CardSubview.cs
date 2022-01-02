@@ -1,6 +1,7 @@
-﻿using Game.DataTypes;
+﻿using Game.Model;
 using UI;
 using UnityEngine;
+using Views.Base;
 
 namespace Views
 {

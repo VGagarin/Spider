@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.DataTypes;
+using Game.Model;
 using Random = UnityEngine.Random;
 
 namespace Game

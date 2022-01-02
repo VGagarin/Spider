@@ -1,4 +1,4 @@
-﻿namespace Models
+﻿namespace Models.Base
 {
     internal  interface IModel { }
 }

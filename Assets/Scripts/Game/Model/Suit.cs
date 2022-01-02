@@ -1,4 +1,4 @@
-﻿namespace Game.DataTypes
+﻿namespace Game.Model
 {
     internal enum Suit
     {

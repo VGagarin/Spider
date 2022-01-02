@@ -1,4 +1,5 @@
 ﻿using Models;
+using Models.Base;
 using UnityEngine;
 using Views;
 

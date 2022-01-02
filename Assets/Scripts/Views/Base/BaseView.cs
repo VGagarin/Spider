@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using ViewModels;
+using ViewModels.Base;
 
-namespace Views
+namespace Views.Base
 {
     internal abstract class BaseView<T> : MonoBehaviour, IView where T : BaseViewModel, new()
     {

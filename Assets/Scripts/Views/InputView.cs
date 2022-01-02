@@ -1,6 +1,6 @@
-﻿using System;
-using IO;
+﻿using IO;
 using ViewModels;
+using Views.Base;
 
 namespace Views
 {

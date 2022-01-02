@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.DataTypes
+namespace Game.Model
 {
     internal struct CardMoveData
     {

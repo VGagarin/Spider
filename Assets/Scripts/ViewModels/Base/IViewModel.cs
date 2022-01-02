@@ -1,4 +1,4 @@
-﻿namespace ViewModels
+﻿namespace ViewModels.Base
 {
     internal interface IViewModel { }
 }
