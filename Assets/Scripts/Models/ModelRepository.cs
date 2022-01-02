@@ -8,24 +8,6 @@ namespace Models
     {
         private static readonly List<IModel> Models = new List<IModel>();
 
-        public static TModel Register<TModel>(TModel model) where TModel : IModel
-        {
-            Models.Add(model);
-            return model;
-        }
-		
-        public static TModel Register<TModel>() where TModel : IModel
-        {
-            return Register(Activator.CreateInstance<TModel>());
-        }
-        
-        public static TModel Resolve<TModel>() where TModel : IModel
-        {
-            IModel model = GetModelByType<TModel>();
-            TModel typedModel = (TModel) model;
-            return typedModel;
-        }
-        
         public static TModel GetModel<TModel>() where TModel : IModel
         {
             TModel model =  Resolve<TModel>();
@@ -36,6 +18,24 @@ namespace Models
             }
 			
             return model;
+        }
+        
+        private static TModel Register<TModel>(TModel model) where TModel : IModel
+        {
+            Models.Add(model);
+            return model;
+        }
+
+        private static TModel Register<TModel>() where TModel : IModel
+        {
+            return Register(Activator.CreateInstance<TModel>());
+        }
+
+        private static TModel Resolve<TModel>() where TModel : IModel
+        {
+            IModel model = GetModelByType<TModel>();
+            TModel typedModel = (TModel) model;
+            return typedModel;
         }
 
         private static IModel GetModelByType<TModel>()

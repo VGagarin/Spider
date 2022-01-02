@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game.DataTypes
 {
     [Serializable]
-    internal struct Card : IEqualityComparer<Card>
+    internal struct Card
     {
         [SerializeField] private Value _value;
         [SerializeField] private Suit _suit;
@@ -22,19 +22,6 @@ namespace Game.DataTypes
         public override string ToString()
         {
             return $"Suit: {Suit}, Value: {Value}";
-        }
-
-        public bool Equals(Card x, Card y)
-        {
-            return x._value == y._value && x._suit == y._suit;
-        }
-
-        public int GetHashCode(Card obj)
-        {
-            unchecked
-            {
-                return ((int) obj._value * 397) ^ (int) obj._suit;
-            }
         }
     }
 }

@@ -4,7 +4,7 @@ using ViewModels;
 
 namespace Views
 {
-    internal abstract class BaseView<T> : MonoBehaviour where T : BaseViewModel, new()
+    internal abstract class BaseView<T> : MonoBehaviour, IView where T : BaseViewModel, new()
     {
         protected T _viewModel;
         

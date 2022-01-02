@@ -20,11 +20,11 @@ namespace Game
         [SerializeField] private float _cardSpeed = 1f;
         [SerializeField] private Ease _easing;
         
-        [SerializeField] private CardView _cardView;
+        [SerializeField] private CardSubview _cardSubview;
         [SerializeField] private Transform _waitingStack;
 
-        private List<CardView>[] _gameField;
-        private List<CardView> _views;
+        private List<CardSubview>[] _gameField;
+        private List<CardSubview> _views;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -32,7 +32,7 @@ namespace Game
         {
             Card[] cards = Deck.CreateDeck();
 
-            CreateCardViews(cards);
+            CreateCardSubviews(cards);
             InitializeGameField();
             Deal(transform.position);
         }
@@ -42,36 +42,35 @@ namespace Game
             _cancellationTokenSource?.Cancel();
         }
 
-        private void CreateCardViews(Card[] cards)
+        private void CreateCardSubviews(Card[] cards)
         {
-            _views = new List<CardView>();
+            _views = new List<CardSubview>();
             
             Transform parent = transform;
-            
+
+            int cardId = 0;
             foreach (Card card in cards)
             {
-                Debug.Log("строчка до инстанса");
-                CardView cardView = Instantiate(_cardView, parent);
-                Debug.Log("строчка после инстанса");
-                cardView.SetCard(card);
+                CardSubview cardSubview = Instantiate(_cardSubview, parent);
+                cardSubview.SetCard(card, cardId);
                 
-                _views.Add(cardView);
+                _views.Add(cardSubview);
             }
         }
 
         private void InitializeGameField()
         {
-            _gameField = new List<CardView>[10];
+            _gameField = new List<CardSubview>[10];
 
             for (int i = 0; i < _gameField.Length; i++)
-                _gameField[i] = new List<CardView>();
+                _gameField[i] = new List<CardSubview>();
         }
 
         private void Deal(Vector3 startPosition)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             
-            foreach (CardView view in _views)
+            foreach (CardSubview view in _views)
                 view.transform.position = _waitingStack.position;
 
             const int cardsToDeal = 54;

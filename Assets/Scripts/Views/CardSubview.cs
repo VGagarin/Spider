@@ -1,24 +1,25 @@
-﻿using System;
-using Game.DataTypes;
+﻿using Game.DataTypes;
 using UI;
 using UnityEngine;
-using ViewModels;
 
 namespace Views
 {
-    internal sealed class CardView : BaseView<CardViewModel>
+    internal sealed class CardSubview : BaseSubview<CardsView>
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private CardSprites _cardSprites;
 
         private Card _card;
         private int _layer;
+        private int _cardId;
 
         public int Layer => _layer;
+        public int CardId => _cardId;
 
-        public void SetCard(Card card)
+        public void SetCard(Card card, int cardId)
         {
             _card = card;
+            _cardId = cardId;
         }
 
         public void SetLayer(int layer)

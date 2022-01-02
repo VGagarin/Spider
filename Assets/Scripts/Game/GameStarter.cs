@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Views;
 
 namespace Game
 {
@@ -15,7 +16,7 @@ namespace Game
 
         private void CreateViews()
         {
-
+            new GameObject("InputView").AddComponent<InputView>();
         }
 
         private void FillModels()

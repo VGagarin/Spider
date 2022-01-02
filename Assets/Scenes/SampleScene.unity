@@ -314,7 +314,7 @@ MonoBehaviour:
   _delayBetweenCardsWhenDealing: 0.05
   _cardSpeed: 10
   _easing: 4
-  _cardView: {fileID: 6092842748433298263, guid: abcb64bac081bcf43b1bcbe042c7d5d6, type: 3}
+  _cardSubview: {fileID: 6092842748433298263, guid: abcb64bac081bcf43b1bcbe042c7d5d6, type: 3}
   _waitingStack: {fileID: 213544675}
 --- !u!4 &1483877854
 Transform:

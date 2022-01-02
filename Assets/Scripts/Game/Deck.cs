@@ -5,9 +5,14 @@ using Random = UnityEngine.Random;
 
 namespace Game
 {
-    internal static class Deck
+    internal class Deck
     {
         private const int CardsInDeck = 104;
+
+        public Deck()
+        {
+            
+        }
     
         public static Card[] CreateDeck()
         {
