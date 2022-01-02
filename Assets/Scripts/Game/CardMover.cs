@@ -21,7 +21,7 @@ namespace Game
         }
 
         public async void MoveToPositionAfterDelay(float delay, Vector3 target, Transform card,
-            InsertAction insertAction)
+            InsertAction insertAction = null)
         {
             try
             {
@@ -33,10 +33,13 @@ namespace Game
                     .DOMove(target, duration)
                     .SetEase(_easing);
 
-                TimeSpan spanBeforeAction = TimeSpan.FromSeconds(duration * insertAction.RelativeTime);
-                await Task.Delay(spanBeforeAction, _cancellationTokenSource.Token);
+                if (insertAction != null)
+                {
+                    TimeSpan spanBeforeAction = TimeSpan.FromSeconds(duration * insertAction.RelativeTime);
+                    await Task.Delay(spanBeforeAction, _cancellationTokenSource.Token);
                 
-                insertAction.Action?.Invoke();
+                    insertAction.Action?.Invoke();
+                }
             }
             catch (OperationCanceledException)
             {

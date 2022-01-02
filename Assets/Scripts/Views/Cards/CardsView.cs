@@ -21,6 +21,7 @@ namespace Views.Cards
         private CardSubview _attachedSubview;
         private Vector3 _offset;
         private Camera _mainCamera;
+        private Vector3 _startPosition;
 
         protected override void Initialize()
         {
@@ -78,13 +79,15 @@ namespace Views.Cards
         private void OnCapturedCardUpdated(int cardId)
         {
             _attachedSubview = _cardSubviewById[cardId];
-            
-            _offset = _attachedSubview.transform.position - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+
+            _startPosition = _attachedSubview.transform.position;
+            _offset = _startPosition - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
             _offset.z = 0;
         }
 
         private void OnReleasedCardUpdated(int cardId)
         {
+            _cardMover.MoveToPositionAfterDelay(0, _startPosition, _attachedSubview.transform);
             _attachedSubview = null;
         }
 
