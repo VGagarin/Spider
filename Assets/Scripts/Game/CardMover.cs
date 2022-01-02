@@ -20,17 +20,17 @@ namespace Game
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async void MoveToPositionAfterDelay(float delay, Vector3 target, Transform card,
+        public async void MoveToLocalPositionAfterDelay(float delay, Vector3 target, Transform card,
             InsertAction insertAction = null)
         {
             try
             {
                 await Task.Delay(TimeSpan.FromSeconds(delay), _cancellationTokenSource.Token);
 
-                float duration = Vector3.Distance(target, card.position) / _cardSpeed;
+                float duration = Vector3.Distance(target, card.localPosition) / _cardSpeed;
 
                 card
-                    .DOMove(target, duration)
+                    .DOLocalMove(target, duration)
                     .SetEase(_easing);
 
                 if (insertAction != null)

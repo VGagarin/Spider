@@ -1,4 +1,5 @@
-﻿using Game;
+﻿using System.Linq;
+using Game;
 using Game.Model;
 using Game.Settings;
 using Models;
@@ -12,8 +13,9 @@ namespace ViewModels
     {
         private readonly DealingSettings _dealingSettings;
         private readonly GameRules _gameRules;
-        
+
         public Vector3 MainZonePosition { get; set; }
+        public Transform[] ControlPoints { get; set; }
         
         public DealingViewModel()
         {
@@ -25,10 +27,10 @@ namespace ViewModels
 
         private void OnDeckCreated(Deck deck)
         {
-            Deal(deck, MainZonePosition);
+            Deal(deck);
         }
 
-        private void Deal(Deck deck, Vector3 mainZonePosition)
+        private void Deal(Deck deck)
         {
             Card[] cards = deck.Cards;
 
@@ -39,9 +41,7 @@ namespace ViewModels
                 int columnIndex = i % _gameRules.Columns;
                 int rowIndex = i / _gameRules.Columns;
 
-                float xOffset = columnIndex * _dealingSettings.DistanceBetweenColumns;
                 float yOffset = -rowIndex * _dealingSettings.SmallVerticalOffset;
-                Vector3 offset = new Vector3(xOffset, yOffset, 0);
 
                 float delay = _dealingSettings.DelayBetweenCardsDeal * i;
 
@@ -49,10 +49,12 @@ namespace ViewModels
                 {
                     CardToMove = cards[i],
                     DelayBeforeMove = delay,
-                    TargetPosition = mainZonePosition + offset,
+                    TargetPosition = Vector3.up * yOffset,
                     TargetLayer = rowIndex,
                     TargetZone = CardsZone.Main,
-                    ColumnIndex = columnIndex
+                    ColumnIndex = columnIndex,
+                    TargetParent = ControlPoints[columnIndex],
+                    IsLocalMove = true
                 };
 
                 if (_gameRules.CardsToDeal - i <= _gameRules.CardsToOpen)

@@ -15,5 +15,6 @@ MonoBehaviour:
   _distanceBetweenColumns: 0.55
   _smallVerticalOffset: 0.2
   _delayBetweenCardsDeal: 0.05
+  _offsetFromEdgesOfScreen: 0.4
   _cardSpeed: 10
   _easing: 4

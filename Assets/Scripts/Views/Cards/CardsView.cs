@@ -21,7 +21,7 @@ namespace Views.Cards
         private CardSubview _attachedSubview;
         private Vector3 _offset;
         private Camera _mainCamera;
-        private Vector3 _startPosition;
+        private Vector3 _startLocalPosition;
 
         protected override void Initialize()
         {
@@ -60,20 +60,18 @@ namespace Views.Cards
             float delayBeforeMove = moveData.DelayBeforeMove;
             Vector3 targetPosition = moveData.TargetPosition;
             Transform cardTransform = card.transform;
+            cardTransform.parent = moveData.TargetParent;
             
             if (moveData.TargetStateIsOpen)
                 card.ShowCard();
             
             InsertAction insertAction = new InsertAction
             {
-                Action = () =>
-                {
-                    card.Layer = moveData.TargetLayer;
-                },
+                Action = () => card.Layer = moveData.TargetLayer,
                 RelativeTime = 0.3f
             };
             
-            _cardMover.MoveToPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform, insertAction);
+            _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform, insertAction);
         }
         
         private void OnCapturedCardUpdated(int cardId)
@@ -84,8 +82,9 @@ namespace Views.Cards
             _attachedSubview = _cardSubviewById[cardId];
             _attachedSubview.Layer += SpiderSettings.GameRules.CardsInDeck;
 
-            _startPosition = _attachedSubview.transform.position;
-            _offset = _startPosition - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Transform attachedSubviewTransform = _attachedSubview.transform;
+            _startLocalPosition = attachedSubviewTransform.localPosition;
+            _offset = attachedSubviewTransform.position - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
             _offset.z = 0;
         }
 
@@ -94,8 +93,15 @@ namespace Views.Cards
             if (_attachedSubview == null) 
                 return;
             
-            _cardMover.MoveToPositionAfterDelay(0, _startPosition, _attachedSubview.transform);
-            _attachedSubview.Layer -= SpiderSettings.GameRules.CardsInDeck;
+            CardSubview cachedSubview = _attachedSubview;
+            InsertAction insertAction = new InsertAction
+            {
+                Action = () => cachedSubview.Layer -= SpiderSettings.GameRules.CardsInDeck,
+                RelativeTime = 1f
+            };
+            
+            _cardMover.MoveToLocalPositionAfterDelay(0, _startLocalPosition, _attachedSubview.transform, insertAction);
+            
             _attachedSubview = null;
         }
 
