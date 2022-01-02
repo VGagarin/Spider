@@ -38,3 +38,5 @@ sysinfo.txt
 *.log
 
 .idea/.idea.Spider/.idea/
+
+Logs/

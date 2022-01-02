@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.DataTypes;
 using Game.Model;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -38,8 +39,8 @@ namespace Game
             {
                 foreach (Value value in Enum.GetValues(typeof(Value)))
                 {
-                    _cards[i++] = new Card(value, suit, i);
-                    _cards[i++] = new Card(value, suit, i);
+                    _cards[i++] = CreateCard(value, suit, i);
+                    _cards[i++] = CreateCard(value, suit, i);
                 }
             }
 

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using DG.Tweening;
+using GeneralPurpose;
 using UnityEngine;
 
 namespace Game
@@ -18,8 +19,9 @@ namespace Game
             _easing = easing;
             _cancellationTokenSource = new CancellationTokenSource();
         }
-        
-        public async void MoveToPositionAfterDelay(float delay, Vector3 target, Transform card)
+
+        public async void MoveToPositionAfterDelay(float delay, Vector3 target, Transform card,
+            InsertAction insertAction)
         {
             try
             {
@@ -30,13 +32,18 @@ namespace Game
                 card
                     .DOMove(target, duration)
                     .SetEase(_easing);
+
+                TimeSpan spanBeforeAction = TimeSpan.FromSeconds(duration * insertAction.RelativeTime);
+                await Task.Delay(spanBeforeAction, _cancellationTokenSource.Token);
+                
+                insertAction.Action?.Invoke();
             }
             catch (OperationCanceledException)
             {
                 card?.DOKill();
             }
         }
-        
+
         ~CardMover()
         {
             _cancellationTokenSource?.Cancel();

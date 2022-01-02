@@ -29,7 +29,7 @@ namespace Game.Model
 
         public override string ToString()
         {
-            return $"Suit: {Suit}, Value: {Value}";
+            return $"Suit: {Suit}, Value: {Value}, Id: {Id}";
         }
     }
 }
