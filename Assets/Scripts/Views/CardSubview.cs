@@ -16,10 +16,10 @@ namespace Views
         public int Layer => _layer;
         public int CardId => _cardId;
 
-        public void SetCard(Card card, int cardId)
+        public void SetCard(Card card)
         {
             _card = card;
-            _cardId = cardId;
+            _cardId = card.Id;
         }
 
         public void SetLayer(int layer)

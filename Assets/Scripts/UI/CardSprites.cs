@@ -19,7 +19,7 @@ namespace UI
 
         public Sprite GetCardSprite(Card card)
         {
-            CardSpriteInfo spriteInfo = _cardSprites.First(cardSpriteInfo => cardSpriteInfo.Card.Equals(card));
+            CardSpriteInfo spriteInfo = _cardSprites.First(info => info.Card.EqualsByValueAndSuit(card));
 
             return spriteInfo.Sprite;
         }

@@ -9,7 +9,7 @@ namespace Views
         private MousePositionProvider _mousePositionProvider;
         private CardsInputProvider _cardsInputProvider;
 
-        private void Start()
+        protected override void Initialize()
         {
             _mousePositionProvider = gameObject.AddComponent<MousePositionProvider>();
             _cardsInputProvider = gameObject.AddComponent<CardsInputProvider>();
@@ -18,6 +18,14 @@ namespace Views
 
             _cardsInputProvider.CardCaptured += _viewModel.OnCardCaptured;
             _cardsInputProvider.CardReleased += _viewModel.OnCardReleased;
+        }
+
+        private void OnDestroy()
+        {
+            _mousePositionProvider.MousePositionUpdated -= _viewModel.OnMousePositionUpdated;
+
+            _cardsInputProvider.CardCaptured -= _viewModel.OnCardCaptured;
+            _cardsInputProvider.CardReleased -= _viewModel.OnCardReleased;
         }
     }
 }

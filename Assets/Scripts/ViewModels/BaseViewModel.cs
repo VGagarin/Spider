@@ -1,9 +1,4 @@
-﻿using Models;
-
-namespace ViewModels
+﻿namespace ViewModels
 {
-    internal abstract class BaseViewModel
-    {
-
-    }
+    internal abstract class BaseViewModel { }
 }

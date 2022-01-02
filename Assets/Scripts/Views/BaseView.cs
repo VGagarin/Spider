@@ -14,6 +14,10 @@ namespace Views
                 throw new Exception("ViewModel already created");
             
             _viewModel = new T();
+
+            Initialize();
         }
+
+        protected abstract void Initialize();
     }
 }
