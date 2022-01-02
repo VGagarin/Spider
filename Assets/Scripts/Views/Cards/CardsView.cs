@@ -68,7 +68,7 @@ namespace Views.Cards
             {
                 Action = () =>
                 {
-                    card.SetLayer(moveData.TargetLayer);
+                    card.Layer = moveData.TargetLayer;
                 },
                 RelativeTime = 0.3f
             };
@@ -79,6 +79,7 @@ namespace Views.Cards
         private void OnCapturedCardUpdated(int cardId)
         {
             _attachedSubview = _cardSubviewById[cardId];
+            _attachedSubview.Layer += SpiderSettings.GameRules.CardsInDeck;
 
             _startPosition = _attachedSubview.transform.position;
             _offset = _startPosition - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -88,6 +89,7 @@ namespace Views.Cards
         private void OnReleasedCardUpdated(int cardId)
         {
             _cardMover.MoveToPositionAfterDelay(0, _startPosition, _attachedSubview.transform);
+            _attachedSubview.Layer -= SpiderSettings.GameRules.CardsInDeck;
             _attachedSubview = null;
         }
 
@@ -118,7 +120,7 @@ namespace Views.Cards
                 _views.Add(cardSubview);
 
                 int cardsToFirstDeal = SpiderSettings.GameRules.CardsToDeal;
-                cardSubview.SetLayer(i <= cardsToFirstDeal ? cardsToFirstDeal - i : -i);
+                cardSubview.Layer = i <= cardsToFirstDeal ? cardsToFirstDeal - i : -i;
             }
         }
     }

@@ -13,20 +13,23 @@ namespace Views.Cards
         private Card _card;
         private int _layer;
         private int _cardId;
-
-        public int Layer => _layer;
+        
         public int CardId => _cardId;
+        
+        public int Layer
+        {
+            get => _layer;
+            set
+            {
+                _spriteRenderer.sortingOrder = value;
+                _layer = value;
+            }
+        }
 
         public void SetCard(Card card)
         {
             _card = card;
             _cardId = card.Id;
-        }
-
-        public void SetLayer(int layer)
-        {
-            _spriteRenderer.sortingOrder = layer;
-            _layer = layer;
         }
 
         public void ShowCard()
