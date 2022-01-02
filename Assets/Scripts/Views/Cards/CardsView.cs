@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DG.Tweening;
 using Game;
 using Game.Model;
 using Game.Settings;
@@ -8,7 +7,7 @@ using UnityEngine;
 using ViewModels;
 using Views.Base;
 
-namespace Views
+namespace Views.Cards
 {
     internal sealed class CardsView : BaseView<CardsViewModel>
     {
@@ -19,19 +18,33 @@ namespace Views
         private List<CardSubview> _views;
         private CardMover _cardMover;
 
+        private CardSubview _attachedSubview;
+        private Vector3 _offset;
+        private Camera _mainCamera;
+
         protected override void Initialize()
         {
+            _mainCamera = Camera.main;
+            
             DealingSettings settings = SpiderSettings.DealingSettings;
             _cardMover = new CardMover(settings.CardSpeed, settings.Easing);
             
             _viewModel.DeckCreated += OnDeckCreated;
             _viewModel.CardMoved += OnCardMoved;
+
+            _viewModel.CapturedCardUpdated += OnCapturedCardUpdated;
+            _viewModel.ReleasedCardUpdated += OnReleasedCardUpdated;
+            _viewModel.MousePositionUpdated += OnMousePositionUpdated;
         }
 
         private void OnDestroy()
         {
             _viewModel.DeckCreated -= OnDeckCreated;
             _viewModel.CardMoved -= OnCardMoved;
+            
+            _viewModel.CapturedCardUpdated -= OnCapturedCardUpdated;
+            _viewModel.ReleasedCardUpdated -= OnReleasedCardUpdated;
+            _viewModel.MousePositionUpdated -= OnMousePositionUpdated;
         }
 
         private void OnDeckCreated(Deck deck)
@@ -60,6 +73,31 @@ namespace Views
             };
             
             _cardMover.MoveToPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform, insertAction);
+        }
+        
+        private void OnCapturedCardUpdated(int cardId)
+        {
+            _attachedSubview = _cardSubviewById[cardId];
+            
+            _offset = _attachedSubview.transform.position - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            _offset.z = 0;
+        }
+
+        private void OnReleasedCardUpdated(int cardId)
+        {
+            _attachedSubview = null;
+        }
+
+        private void OnMousePositionUpdated(Vector3 mousePosition)
+        {
+            if (_attachedSubview)
+            {
+                Vector3 screenToWorldPoint = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+                
+                Transform attachedTransform = _attachedSubview.transform;
+                screenToWorldPoint.z = attachedTransform.position.z;
+                attachedTransform.position = screenToWorldPoint + _offset;
+            }
         }
 
         private void CreateCardSubviews(Card[] cards)

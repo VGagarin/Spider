@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using Views;
+using Views.Cards;
 
 namespace IO
 {
@@ -9,7 +9,6 @@ namespace IO
     {
         private CardSubview _attachedView;
         private Camera _mainCamera;
-        private Vector3 _offset;
 
         public event Action<int> CardCaptured;
         public event Action<int> CardReleased;
@@ -40,8 +39,6 @@ namespace IO
                         CardCaptured?.Invoke(cardSubview.CardId);
                         
                         _attachedView = cardSubview;
-                        _offset = _attachedView.transform.position - origin;
-                        _offset.z = 0;
                     }
                 }
             }
@@ -51,13 +48,6 @@ namespace IO
                 CardReleased?.Invoke(_attachedView.CardId);
                 
                 _attachedView = null;
-            }
-
-            if (_attachedView)
-            {
-                Vector3 screenToWorldPoint = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-                screenToWorldPoint.z = _attachedView.transform.position.z;
-                _attachedView.transform.position = screenToWorldPoint + _offset;
             }
         }
     }

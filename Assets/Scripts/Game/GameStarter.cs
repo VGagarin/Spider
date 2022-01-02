@@ -2,6 +2,7 @@
 using Models.Base;
 using UnityEngine;
 using Views;
+using Views.Cards;
 
 namespace Game
 {

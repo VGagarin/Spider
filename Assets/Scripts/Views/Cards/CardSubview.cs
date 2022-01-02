@@ -3,7 +3,7 @@ using UI;
 using UnityEngine;
 using Views.Base;
 
-namespace Views
+namespace Views.Cards
 {
     internal sealed class CardSubview : BaseSubview<CardsView>
     {
