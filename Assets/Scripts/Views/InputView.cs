@@ -16,16 +16,20 @@ namespace Views
 
             _mousePositionProvider.MousePositionUpdated += _viewModel.OnMousePositionUpdated;
 
-            _cardsInputProvider.CardCaptured += _viewModel.OnCardCaptured;
+            _cardsInputProvider.CardTryCaptured += _viewModel.OnCardTryCaptured;
             _cardsInputProvider.CardReleased += _viewModel.OnCardReleased;
+
+            _viewModel.CardCapturedFailed += _cardsInputProvider.CardCapturedFailed;
         }
 
         private void OnDestroy()
         {
             _mousePositionProvider.MousePositionUpdated -= _viewModel.OnMousePositionUpdated;
 
-            _cardsInputProvider.CardCaptured -= _viewModel.OnCardCaptured;
+            _cardsInputProvider.CardTryCaptured -= _viewModel.OnCardTryCaptured;
             _cardsInputProvider.CardReleased -= _viewModel.OnCardReleased;
+            
+            _viewModel.CardCapturedFailed -= _cardsInputProvider.CardCapturedFailed;
         }
     }
 }

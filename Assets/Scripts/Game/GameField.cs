@@ -51,6 +51,8 @@ namespace Game
         
         public List<Card> GetColumn(int columnId) => _mainZone[columnId];
         
+        public List<Card> GetColumn(Card card) => _mainZone[FindColumn(card)];
+        
         public bool IsTurnAvailable(Card card, int targetColumnIndex)
         {
             int sourceColumnId = FindColumn(card);
@@ -76,6 +78,26 @@ namespace Game
             }
 
             throw new Exception("Column not found");
+        }
+
+        public bool CardCanBeCaptured(Card card)
+        {
+            List<Card> column = GetColumn(card);
+
+            int cardRow = column.IndexOf(card);
+
+            bool cardIsUpper = cardRow == column.Count - 1;
+            if (cardIsUpper)
+                return true;
+            
+            Card previousCard = card;
+            for (int i = cardRow + 1; i < column.Count; previousCard = column[i], i++)
+            {
+                if (previousCard.Value == column[i].Value - 1 && previousCard.Suit == column[i].Suit)
+                    return true;
+            }
+
+            return false;
         }
 
         private void InitializeMainZone()

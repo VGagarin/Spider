@@ -10,7 +10,7 @@ namespace IO
         private CardSubview _attachedView;
         private Camera _mainCamera;
 
-        public event Action<int, Vector3> CardCaptured;
+        public event Action<int, Vector3> CardTryCaptured;
         public event Action<int, Vector3> CardReleased;
         
         private void Awake()
@@ -36,19 +36,20 @@ namespace IO
 
                     if (cardSubview && cardSubview.IsMovable)
                     {
-                        CardCaptured?.Invoke(cardSubview.CardId, cardSubview.transform.position);
-                        
                         _attachedView = cardSubview;
+                        CardTryCaptured?.Invoke(cardSubview.CardId, cardSubview.transform.position);
                     }
                 }
             }
 
-            if (Input.GetMouseButtonUp(0) && _attachedView)
+            if (Input.GetMouseButtonUp(0) && _attachedView != null)
             {
                 CardReleased?.Invoke(_attachedView.CardId, _attachedView.transform.position);
                 
                 _attachedView = null;
             }
         }
+
+        public void CardCapturedFailed() => _attachedView = null;
     }
 }

@@ -11,6 +11,8 @@ namespace ViewModels
     internal class InputViewModel : BaseViewModel
     {
         private readonly InputModel _inputModel;
+
+        public event Action CardCapturedFailed;
         
         public InputViewModel()
         {
@@ -22,14 +24,20 @@ namespace ViewModels
             _inputModel.SetMousePosition(mousePosition);
         }
 
-        public void OnCardCaptured(int cardId, Vector3 position)
+        public void OnCardTryCaptured(int cardId, Vector3 position)
         {
-            int columnIndex = FindColumnIndex(position);
+            CardsModel cardsModel = ModelRepository.GetModel<CardsModel>();
+
+            if (!cardsModel.CardCanBeCaptured(cardId))
+            {
+                CardCapturedFailed?.Invoke();
+                return;
+            }
 
             CardInputData cardInputData = new CardInputData
             {
                 CardId = cardId,
-                ColumnId = columnIndex,
+                ColumnId = cardsModel.GetCardColumnId(cardId),
                 Position = position
             };
             

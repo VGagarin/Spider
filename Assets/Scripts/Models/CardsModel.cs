@@ -19,8 +19,6 @@ namespace Models
         
         public Transform[] ColumnPoints { get; private set; }
         
-        public Deck Deck => _deck;
-
         public void CreateDeck()
         {
             _deck = new Deck();
@@ -59,7 +57,6 @@ namespace Models
             MoveCard(new CardMoveData
             {
                 CardToMove = card,
-                DelayBeforeMove = 0,
                 TargetPosition = Vector3.up * -rowIndex * SpiderSettings.DealingSettings.SmallVerticalOffset,
                 TargetLayer = rowIndex,
                 TargetStateIsOpen = true,
@@ -72,5 +69,9 @@ namespace Models
 
             return true;
         }
+        
+        public int GetCardColumnId(int cardId) => _gameField.FindColumn(_deck.GetCardById(cardId));
+
+        public bool CardCanBeCaptured(int cardId) => _gameField.CardCanBeCaptured(_deck.GetCardById(cardId));
     }
 }
