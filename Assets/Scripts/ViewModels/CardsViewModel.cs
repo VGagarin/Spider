@@ -56,26 +56,9 @@ namespace ViewModels
         {
             CardsModel cardsModel = ModelRepository.GetModel<CardsModel>();
 
-            TurnData turnData = cardsModel.IsTurnAvailable(cardInputData.CardId, cardInputData.ColumnId);
+            bool isTurnPerformed = cardsModel.PerformTurnIfPossible(cardInputData.CardId, cardInputData.ColumnId);
 
-            if (turnData.IsTurnAvailable)
-            {
-                CardMoveData cardMoveData = new CardMoveData
-                {
-                    CardToMove = turnData.Card,
-                    DelayBeforeMove = 0,
-                    TargetPosition = turnData.Position,
-                    TargetLayer = turnData.Layer,
-                    TargetStateIsOpen = true,
-                    TargetZone = CardsZone.Main,
-                    ColumnIndex = turnData.TargetColumnId,
-                    TargetParent = turnData.Parent,
-                    IsLocalMove = true
-                };
-
-                cardsModel.MoveCard(cardMoveData);
-            }
-            else
+            if (!isTurnPerformed)
             {
                 CardReturned?.Invoke(cardInputData);
             }

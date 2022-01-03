@@ -56,9 +56,8 @@ namespace Views.Cards
         private void OnCardMoved(CardMoveData moveData)
         {
             CardSubview card = _cardSubviewById[moveData.CardToMove.Id];
-
-            if (_attachedSubview == card)
-                _attachedSubview = null;
+            
+            _attachedSubview = null;
 
             float delayBeforeMove = moveData.DelayBeforeMove;
             Vector3 targetPosition = moveData.TargetPosition;

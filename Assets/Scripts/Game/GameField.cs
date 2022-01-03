@@ -29,10 +29,10 @@ namespace Game
                 case CardsZone.Waiting:
                     throw new Exception($"Некорректная {nameof(CardMoveData.TargetZone)} в {nameof(CardMoveData)}");
                 case CardsZone.Main:
-                    MoveCardFromWaitingToMain(moveData.CardToMove, moveData.ColumnIndex);
+                    MoveCardFromWaitingToMain(moveData.CardToMove, moveData.ColumnId);
                     break;
                 case CardsZone.Discard:
-                    MoveCardFromMainToDiscard(moveData.CardToMove, moveData.ColumnIndex);
+                    MoveCardFromMainToDiscard(moveData.CardToMove, moveData.ColumnId);
                     break;
                 default:
                     throw new Exception($"Некорректная {nameof(CardMoveData.TargetZone)} в {nameof(CardMoveData)}");

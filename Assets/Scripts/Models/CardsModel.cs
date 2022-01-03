@@ -39,22 +39,30 @@ namespace Models
             ColumnPoints = points;
         }
 
-        public TurnData IsTurnAvailable(int cardId, int targetColumnId)
+        public bool PerformTurnIfPossible(int cardId, int targetColumnId)
         {
             Card card = _deck.GetCardById(cardId);
+            
             bool isTurnAvailable = _gameField.IsTurnAvailable(card, targetColumnId);
-
             int rowIndex = _gameField.GetColumnLength(targetColumnId);
-            return new TurnData
+            
+            if (!isTurnAvailable)
+                return false;
+
+            MoveCard(new CardMoveData
             {
-                IsTurnAvailable = isTurnAvailable,
-                Card = card,
-                SourceColumnId = _gameField.FindColumn(card),
-                TargetColumnId = targetColumnId,
-                Layer = rowIndex,
-                Parent = ColumnPoints[targetColumnId],
-                Position = Vector3.up * -rowIndex * SpiderSettings.DealingSettings.SmallVerticalOffset
-            };
+                CardToMove = card,
+                DelayBeforeMove = 0,
+                TargetPosition = Vector3.up * -rowIndex * SpiderSettings.DealingSettings.SmallVerticalOffset,
+                TargetLayer = rowIndex,
+                TargetStateIsOpen = true,
+                TargetZone = CardsZone.Main,
+                ColumnId = targetColumnId,
+                TargetParent = ColumnPoints[targetColumnId],
+                IsLocalMove = true
+            });
+
+            return true;
         }
     }
 }

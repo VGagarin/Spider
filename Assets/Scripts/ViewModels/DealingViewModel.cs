@@ -53,7 +53,7 @@ namespace ViewModels
                     TargetPosition = Vector3.up * yOffset,
                     TargetLayer = rowIndex,
                     TargetZone = CardsZone.Main,
-                    ColumnIndex = columnIndex,
+                    ColumnId = columnIndex,
                     TargetParent = ColumnPoints[columnIndex],
                     IsLocalMove = true
                 };
