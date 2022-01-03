@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Model;
 
 namespace Game
@@ -40,12 +41,42 @@ namespace Game
 
         public void MoveCardFromWaitingToMain(Card card, int column)
         {
-            
+            _waitingZone.Remove(card);
+            _mainZone[column].Add(card);
         }
         
         public void MoveCardFromMainToDiscard(Card card, int moveDataColumnIndex)
         {
             
+        }
+
+        public int GetColumnLength(int columnId) => _mainZone[columnId].Count;
+        
+        public bool IsTurnAvailable(Card card, int targetColumnIndex)
+        {
+            int sourceColumnId = FindColumn(card);
+
+            if (targetColumnIndex == sourceColumnId)
+                return false;
+
+            if (IsColumnEmpty(targetColumnIndex))
+                return true;
+
+            Card targetCard = GetUpperCardInColumn(targetColumnIndex);
+            return card.Value == targetCard.Value + 1;
+        }
+        
+        public int FindColumn(Card card)
+        {
+            for (int index = 0; index < _mainZone.Length; index++)
+            {
+                List<Card> column = _mainZone[index];
+
+                if (column.Contains(card))
+                    return index;
+            }
+
+            throw new Exception("Column not found");
         }
 
         private void InitializeMainZone()
@@ -55,5 +86,9 @@ namespace Game
             for (int i = 0; i < _mainZone.Length; i++)
                 _mainZone[i] = new List<Card>();
         }
+
+        private bool IsColumnEmpty(int columnId) => !_mainZone[columnId].Any();
+
+        private Card GetUpperCardInColumn(int columnId) => _mainZone[columnId].Last();
     }
 }

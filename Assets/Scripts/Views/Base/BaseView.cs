@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using ViewModels;
 using ViewModels.Base;
 
 namespace Views.Base

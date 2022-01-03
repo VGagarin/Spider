@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Model;
 using Models.Base;
 using UnityEngine;
 
@@ -7,12 +8,10 @@ namespace Models
     internal class InputModel : IModel
     {
         public event Action<Vector3> MousePositionUpdated;
-        public event Action<int> CapturedCardUpdated; 
-        public event Action<int> ReleasedCardUpdated; 
+        public event Action<CardInputData> CapturedCardUpdated; 
+        public event Action<CardInputData> ReleasedCardUpdated; 
 
         public Vector3 MousePosition { get; private set; }
-        public int? CapturedCardId { get; private set;}
-        public int? ReleasedCardId { get; private set;}
 
         public void SetMousePosition(Vector3 mousePosition)
         {
@@ -23,17 +22,14 @@ namespace Models
             MousePositionUpdated?.Invoke(mousePosition);
         }
 
-        public void SetCapturedCardId(int id)
+        public void SetCapturedCardId(CardInputData inputData)
         {
-            CapturedCardId = id;
-            CapturedCardUpdated?.Invoke(id);
+            CapturedCardUpdated?.Invoke(inputData);
         }
 
-        public void SetReleasedCardId(int id)
+        public void SetReleasedCardId(CardInputData inputData)
         {
-            CapturedCardId = null;
-            ReleasedCardId = id;
-            ReleasedCardUpdated?.Invoke(id);
+            ReleasedCardUpdated?.Invoke(inputData);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Game;
+﻿using Game;
 using Game.Model;
 using Game.Settings;
 using Models;
@@ -13,12 +12,14 @@ namespace ViewModels
     {
         private readonly DealingSettings _dealingSettings;
         private readonly GameRules _gameRules;
+        private readonly CardsModel _cardsModel;
 
-        public Transform[] ControlPoints { get; set; }
+        public Transform[] ColumnPoints { get; set; }
         
         public DealingViewModel()
         {
-            ModelRepository.GetModel<CardsModel>().DeckCreated += OnDeckCreated;
+            _cardsModel = ModelRepository.GetModel<CardsModel>();
+            _cardsModel.DeckCreated += OnDeckCreated;
             
             _dealingSettings = SpiderSettings.DealingSettings;
             _gameRules = SpiderSettings.GameRules;
@@ -26,6 +27,7 @@ namespace ViewModels
 
         private void OnDeckCreated(Deck deck)
         {
+            _cardsModel.UpdateColumnPoints(ColumnPoints);
             Deal(deck);
         }
 
@@ -52,7 +54,7 @@ namespace ViewModels
                     TargetLayer = rowIndex,
                     TargetZone = CardsZone.Main,
                     ColumnIndex = columnIndex,
-                    TargetParent = ControlPoints[columnIndex],
+                    TargetParent = ColumnPoints[columnIndex],
                     IsLocalMove = true
                 };
 

@@ -1,4 +1,7 @@
-﻿using Models;
+﻿using System;
+using System.Linq;
+using Game.Model;
+using Models;
 using Models.Base;
 using UnityEngine;
 using ViewModels.Base;
@@ -19,14 +22,42 @@ namespace ViewModels
             _inputModel.SetMousePosition(mousePosition);
         }
 
-        public void OnCardCaptured(int cardId)
+        public void OnCardCaptured(int cardId, Vector3 position)
         {
-            _inputModel.SetCapturedCardId(cardId);
+            int columnIndex = FindColumnIndex(position);
+
+            CardInputData cardInputData = new CardInputData
+            {
+                CardId = cardId,
+                ColumnId = columnIndex,
+                Position = position
+            };
+            
+            _inputModel.SetCapturedCardId(cardInputData);
         }
 
-        public void OnCardReleased(int cardId)
+        public void OnCardReleased(int cardId, Vector3 position)
         {
-            _inputModel.SetReleasedCardId(cardId);
+            int columnIndex = FindColumnIndex(position);
+
+            CardInputData cardInputData = new CardInputData
+            {
+                CardId = cardId,
+                ColumnId = columnIndex,
+                Position = position
+            };
+
+            _inputModel.SetReleasedCardId(cardInputData);
+        }
+
+        private int FindColumnIndex(Vector3 position)
+        {
+            Transform[] columnPositions = ModelRepository.GetModel<CardsModel>().ColumnPoints;
+            float[] horizontalPositions = columnPositions.Select(columnPosition => columnPosition.position.x).ToArray();
+            int columnIndex = Array.BinarySearch(horizontalPositions, position.x);
+            columnIndex = columnIndex < 0 ? ~columnIndex : columnIndex;
+
+            return columnIndex;
         }
     }
 }

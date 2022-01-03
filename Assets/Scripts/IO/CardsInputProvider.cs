@@ -10,8 +10,8 @@ namespace IO
         private CardSubview _attachedView;
         private Camera _mainCamera;
 
-        public event Action<int> CardCaptured;
-        public event Action<int> CardReleased;
+        public event Action<int, Vector3> CardCaptured;
+        public event Action<int, Vector3> CardReleased;
         
         private void Awake()
         {
@@ -34,9 +34,9 @@ namespace IO
                 {
                     CardSubview cardSubview = views.OrderBy(view => view.Layer).Last();
 
-                    if (cardSubview)
+                    if (cardSubview && cardSubview.IsMovable)
                     {
-                        CardCaptured?.Invoke(cardSubview.CardId);
+                        CardCaptured?.Invoke(cardSubview.CardId, cardSubview.transform.position);
                         
                         _attachedView = cardSubview;
                     }
@@ -45,7 +45,7 @@ namespace IO
 
             if (Input.GetMouseButtonUp(0) && _attachedView)
             {
-                CardReleased?.Invoke(_attachedView.CardId);
+                CardReleased?.Invoke(_attachedView.CardId, _attachedView.transform.position);
                 
                 _attachedView = null;
             }

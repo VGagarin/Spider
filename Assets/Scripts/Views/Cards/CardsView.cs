@@ -34,7 +34,7 @@ namespace Views.Cards
             _viewModel.CardMoved += OnCardMoved;
 
             _viewModel.CapturedCardUpdated += OnCapturedCardUpdated;
-            _viewModel.ReleasedCardUpdated += OnReleasedCardUpdated;
+            _viewModel.CardReturned += OnReturnCard;
             _viewModel.MousePositionUpdated += OnMousePositionUpdated;
         }
 
@@ -44,7 +44,7 @@ namespace Views.Cards
             _viewModel.CardMoved -= OnCardMoved;
             
             _viewModel.CapturedCardUpdated -= OnCapturedCardUpdated;
-            _viewModel.ReleasedCardUpdated -= OnReleasedCardUpdated;
+            _viewModel.CardReturned -= OnReturnCard;
             _viewModel.MousePositionUpdated -= OnMousePositionUpdated;
         }
 
@@ -56,6 +56,9 @@ namespace Views.Cards
         private void OnCardMoved(CardMoveData moveData)
         {
             CardSubview card = _cardSubviewById[moveData.CardToMove.Id];
+
+            if (_attachedSubview == card)
+                _attachedSubview = null;
 
             float delayBeforeMove = moveData.DelayBeforeMove;
             Vector3 targetPosition = moveData.TargetPosition;
@@ -74,12 +77,12 @@ namespace Views.Cards
             _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform, insertAction);
         }
         
-        private void OnCapturedCardUpdated(int cardId)
+        private void OnCapturedCardUpdated(CardInputData cardInputData)
         {
-            if (!_cardSubviewById[cardId].IsMovable)
+            if (!_cardSubviewById[cardInputData.CardId].IsMovable)
                 return;
             
-            _attachedSubview = _cardSubviewById[cardId];
+            _attachedSubview = _cardSubviewById[cardInputData.CardId];
             _attachedSubview.Layer += SpiderSettings.GameRules.CardsInDeck;
 
             Transform attachedSubviewTransform = _attachedSubview.transform;
@@ -88,11 +91,8 @@ namespace Views.Cards
             _offset.z = 0;
         }
 
-        private void OnReleasedCardUpdated(int cardId)
+        private void OnReturnCard(CardInputData cardInputData)
         {
-            if (_attachedSubview == null) 
-                return;
-            
             CardSubview cachedSubview = _attachedSubview;
             InsertAction insertAction = new InsertAction
             {

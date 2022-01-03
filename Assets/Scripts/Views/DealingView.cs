@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Game.Settings;
 using UnityEngine;
 using ViewModels;
@@ -11,11 +10,11 @@ namespace Views
     {
         [SerializeField] private Transform _mainZone;
 
-        private Transform[] _controlPoints;
+        private Transform[] _columnPoints;
         
         protected override void Initialize()
         {
-            _viewModel.ControlPoints = CreateControlPoints();
+            _viewModel.ColumnPoints = CreateColumnPoints();
             
             UpdatePositions();
         }
@@ -25,21 +24,21 @@ namespace Views
             UpdatePositions();
         }
 
-        private Transform[] CreateControlPoints()
+        private Transform[] CreateColumnPoints()
         {
-            _controlPoints = new Transform[SpiderSettings.GameRules.Columns];
+            _columnPoints = new Transform[SpiderSettings.GameRules.Columns];
 
-            for (int i = 0; i < _controlPoints.Length; i++)
+            for (int i = 0; i < _columnPoints.Length; i++)
             {
-                GameObject controlPoint = new GameObject($"ControlPoint {i}");
+                GameObject controlPoint = new GameObject($"ColumnPoint {i}");
 
                 Transform pointTransform = controlPoint.transform;
                 pointTransform.parent = transform;
 
-                _controlPoints[i] = pointTransform;
+                _columnPoints[i] = pointTransform;
             }
 
-            return _controlPoints;
+            return _columnPoints;
         }
 
         private void UpdatePositions()
@@ -52,9 +51,9 @@ namespace Views
             Vector3 end = start;
             end.x = bounds.y;
             
-            for (int i = 0; i < _controlPoints.Length; i++)
+            for (int i = 0; i < _columnPoints.Length; i++)
             {
-                _controlPoints[i].transform.position = Vector3.Lerp(start, end, (float)i / (_controlPoints.Length - 1));
+                _columnPoints[i].transform.position = Vector3.Lerp(start, end, (float)i / (_columnPoints.Length - 1));
             }
         }
         
@@ -66,7 +65,7 @@ namespace Views
             bounds.x += offsetFromEdgesOfScreen;
             bounds.y -= offsetFromEdgesOfScreen;
 
-            int pointsCount = _controlPoints.Length;
+            int pointsCount = _columnPoints.Length;
             
             float distanceBetweenColumns = (bounds.y - bounds.x) / (pointsCount - 1);
             float maxDistanceBetweenColumns = SpiderSettings.DealingSettings.MaxDistanceBetweenColumns;

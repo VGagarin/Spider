@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Game;
 using Game.Model;
 using Models;
@@ -12,8 +13,8 @@ namespace ViewModels
     {
         public event Action<Deck> DeckCreated;
         public event Action<CardMoveData> CardMoved;
-        public event Action<int> CapturedCardUpdated; 
-        public event Action<int> ReleasedCardUpdated; 
+        public event Action<CardInputData> CapturedCardUpdated; 
+        public event Action<CardInputData> CardReturned; 
         public event Action<Vector3> MousePositionUpdated;
 
         public CardsViewModel()
@@ -28,6 +29,13 @@ namespace ViewModels
             inputModel.ReleasedCardUpdated += OnReleasedCardUpdated;
             inputModel.MousePositionUpdated += OnMousePositionUpdated;
         }
+        
+        public void CardReleasedOnPosition(int cardId, Vector3 position)
+        {
+            
+            
+            
+        }
 
         private void OnDeckCreated(Deck deck)
         {
@@ -39,14 +47,38 @@ namespace ViewModels
             CardMoved?.Invoke(cardMoveData);
         }
         
-        private void OnCapturedCardUpdated(int cardId)
+        private void OnCapturedCardUpdated(CardInputData cardInputData)
         {
-            CapturedCardUpdated?.Invoke(cardId);
+            CapturedCardUpdated?.Invoke(cardInputData);
         }
 
-        private void OnReleasedCardUpdated(int cardId)
+        private void OnReleasedCardUpdated(CardInputData cardInputData)
         {
-            ReleasedCardUpdated?.Invoke(cardId);
+            CardsModel cardsModel = ModelRepository.GetModel<CardsModel>();
+
+            TurnData turnData = cardsModel.IsTurnAvailable(cardInputData.CardId, cardInputData.ColumnId);
+
+            if (turnData.IsTurnAvailable)
+            {
+                CardMoveData cardMoveData = new CardMoveData
+                {
+                    CardToMove = turnData.Card,
+                    DelayBeforeMove = 0,
+                    TargetPosition = turnData.Position,
+                    TargetLayer = turnData.Layer,
+                    TargetStateIsOpen = true,
+                    TargetZone = CardsZone.Main,
+                    ColumnIndex = turnData.TargetColumnId,
+                    TargetParent = turnData.Parent,
+                    IsLocalMove = true
+                };
+
+                cardsModel.MoveCard(cardMoveData);
+            }
+            else
+            {
+                CardReturned?.Invoke(cardInputData);
+            }
         }
         
         private void OnMousePositionUpdated(Vector3 position)
