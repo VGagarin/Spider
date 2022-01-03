@@ -54,10 +54,18 @@ namespace ViewModels
         {
             Transform[] columnPositions = ModelRepository.GetModel<CardsModel>().ColumnPoints;
             float[] horizontalPositions = columnPositions.Select(columnPosition => columnPosition.position.x).ToArray();
-            int columnIndex = Array.BinarySearch(horizontalPositions, position.x);
-            columnIndex = columnIndex < 0 ? ~columnIndex : columnIndex;
 
-            return columnIndex;
+            float halfDistanceBetweenColumns = (horizontalPositions[1] - horizontalPositions[0]) / 2f;
+            float horizontalPosition = Mathf.Clamp(position.x, horizontalPositions.First(), horizontalPositions.Last());
+            for (int columnId = 0; columnId < columnPositions.Length; columnId++)
+            {
+                float distanceToColumn = Mathf.Abs(horizontalPosition - horizontalPositions[columnId]);
+
+                if (distanceToColumn <= halfDistanceBetweenColumns)
+                    return columnId;
+            }
+
+            throw new Exception("ColumnId not found");
         }
     }
 }
