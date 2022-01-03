@@ -18,6 +18,7 @@ namespace Views
 
             _cardsInputProvider.CardTryCaptured += _viewModel.OnCardTryCaptured;
             _cardsInputProvider.CardReleased += _viewModel.OnCardReleased;
+            _cardsInputProvider.ClosedCardClicking += _viewModel.OnClosedCardClicking;
 
             _viewModel.CardCapturedFailed += _cardsInputProvider.CardCapturedFailed;
         }
@@ -28,6 +29,7 @@ namespace Views
 
             _cardsInputProvider.CardTryCaptured -= _viewModel.OnCardTryCaptured;
             _cardsInputProvider.CardReleased -= _viewModel.OnCardReleased;
+            _cardsInputProvider.ClosedCardClicking -= _viewModel.OnClosedCardClicking;
             
             _viewModel.CardCapturedFailed -= _cardsInputProvider.CardCapturedFailed;
         }

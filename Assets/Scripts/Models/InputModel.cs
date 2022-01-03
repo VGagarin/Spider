@@ -9,7 +9,8 @@ namespace Models
     {
         public event Action<Vector3> MousePositionUpdated;
         public event Action<CardInputData> CapturedCardUpdated; 
-        public event Action<CardInputData> ReleasedCardUpdated; 
+        public event Action<CardInputData> ReleasedCardUpdated;
+        public event Action WaitingZoneActivated;
 
         public Vector3 MousePosition { get; private set; }
 
@@ -30,6 +31,11 @@ namespace Models
         public void SetReleasedCardId(CardInputData inputData)
         {
             ReleasedCardUpdated?.Invoke(inputData);
+        }
+
+        public void OnWaitingZoneActivated()
+        {
+            WaitingZoneActivated?.Invoke();
         }
     }
 }

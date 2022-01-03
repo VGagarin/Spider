@@ -11,10 +11,12 @@ namespace Game.Settings
         [SerializeField] private int _columns = 10;
         [SerializeField] private int _cardsToOpen = 10;
         [SerializeField] private int _cardsToDeal = 54;
+        [SerializeField] private int _cardsToAdditionalDeal = 10;
         
         public int CardsInDeck => _cardsInDeck;
         public int Columns => _columns;
         public int CardsToOpen => _cardsToOpen;
         public int CardsToDeal => _cardsToDeal;
+        public int CardsToAdditionalDeal => _cardsToAdditionalDeal;
     }
 }

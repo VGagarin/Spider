@@ -57,6 +57,14 @@ namespace ViewModels
 
             _inputModel.SetReleasedCardId(cardInputData);
         }
+        
+        public void OnClosedCardClicking(int cardId)
+        {
+            CardsZone zone = ModelRepository.GetModel<CardsModel>().GetCardZone(cardId);
+
+            if (zone == CardsZone.Waiting)
+                _inputModel.OnWaitingZoneActivated();
+        }
 
         private int FindColumnIndex(Vector3 position)
         {

@@ -28,6 +28,13 @@ namespace Models
             DeckCreated?.Invoke(_deck);
         }
 
+        public void MoveCard(BaseCardMoveData baseMoveData)
+        {
+            CardMoveData cardMoveData = CreateMoveData(baseMoveData);
+
+            MoveCard(cardMoveData);
+        }
+
         public void MoveCard(CardMoveData moveData)
         {
             _gameField.MoveCard(moveData);
@@ -44,8 +51,6 @@ namespace Models
             Card card = _deck.GetCardById(cardId);
             
             bool isTurnAvailable = _gameField.IsTurnAvailable(card, targetColumnId);
-            int targetRowIndex = _gameField.GetColumnLength(targetColumnId);
-            
             if (!isTurnAvailable)
                 return false;
             
@@ -55,7 +60,7 @@ namespace Models
                 CardOpened?.Invoke(sourceColumn[sourceColumn.IndexOf(card) - 1]);
 
             List<Card> cardColumn = GetCardColumn(cardId, sourceColumnId);
-            MoveCardColumn(cardColumn, targetRowIndex, targetColumnId);
+            MoveCardColumn(cardColumn, targetColumnId);
 
             return true;
         }
@@ -70,26 +75,50 @@ namespace Models
             int cardRow = column.IndexOf(_deck.GetCardById(cardId));
             return column.GetRange(cardRow, column.Count - cardRow);
         }
-
-        private void MoveCardColumn(IReadOnlyList<Card> column, int targetRowId, int targetColumnId)
+        
+        public CardsZone GetCardZone(int cardId)
         {
-            for (int i = 0; i < column.Count; i++)
-            {
-                int row = targetRowId + i;
+            Card card = _deck.GetCardById(cardId);
+            return _gameField.GetCardZone(card);
+        }
 
-                MoveCard(new CardMoveData
+        public List<Card> GetCardsInWaitingZone()
+        {
+            return _gameField.GetCardsInWaiting();
+        }
+
+        private void MoveCardColumn(IEnumerable<Card> column, int targetColumnId)
+        {
+            foreach (Card card in column)
+            {
+                MoveCard(new BaseCardMoveData
                 {
-                    CardToMove = column[i],
-                    TargetPosition = Vector3.up * -row * SpiderSettings.DealingSettings.SmallVerticalOffset,
-                    TargetLayer = row,
+                    CardId = card.Id,
                     TargetStateIsOpen = true,
                     SourceZone = CardsZone.Main,
                     TargetZone = CardsZone.Main,
-                    ColumnId = targetColumnId,
-                    TargetParent = ColumnPoints[targetColumnId],
-                    IsLocalMove = true
+                    ColumnId = targetColumnId
                 });
             }
+        }
+
+        private CardMoveData CreateMoveData(BaseCardMoveData baseMoveData)
+        {
+            int rowId = _gameField.GetColumnLength(baseMoveData.ColumnId);
+
+            return new CardMoveData
+            {
+                CardToMove = _deck.GetCardById(baseMoveData.CardId),
+                DelayBeforeMove = baseMoveData.DelayBeforeMove,
+                TargetPosition = Vector3.up * -rowId * SpiderSettings.DealingSettings.SmallVerticalOffset,
+                TargetLayer = rowId,
+                SourceZone = baseMoveData.SourceZone,
+                TargetZone = baseMoveData.TargetZone,
+                ColumnId = baseMoveData.ColumnId,
+                TargetParent = ColumnPoints[baseMoveData.ColumnId],
+                IsLocalMove = true,
+                TargetStateIsOpen = baseMoveData.TargetStateIsOpen
+            };
         }
     }
 }

@@ -100,6 +100,18 @@ namespace Game
 
             return true;
         }
+        
+        public CardsZone GetCardZone(Card card)
+        {
+            if (_waitingZone.Contains(card))
+                return CardsZone.Waiting;
+            if (_discardZone.Contains(card))
+                return CardsZone.Discard;
+
+            return CardsZone.Main;
+        }
+
+        public List<Card> GetCardsInWaiting() => _waitingZone;
 
         private void InitializeMainZone()
         {
