@@ -32,6 +32,7 @@ namespace Views.Cards
             
             _viewModel.DeckCreated += OnDeckCreated;
             _viewModel.CardMoved += OnCardMoved;
+            _viewModel.CardOpened += OnCardOpened;
 
             _viewModel.CapturedCardUpdated += OnCapturedCardUpdated;
             _viewModel.CardReturned += OnReturnCard;
@@ -42,16 +43,14 @@ namespace Views.Cards
         {
             _viewModel.DeckCreated -= OnDeckCreated;
             _viewModel.CardMoved -= OnCardMoved;
+            _viewModel.CardOpened -= OnCardOpened;
             
             _viewModel.CapturedCardUpdated -= OnCapturedCardUpdated;
             _viewModel.CardReturned -= OnReturnCard;
             _viewModel.MousePositionUpdated -= OnMousePositionUpdated;
         }
 
-        private void OnDeckCreated(Deck deck)
-        {
-            CreateCardSubviews(deck.Cards);
-        }
+        private void OnDeckCreated(Deck deck) => CreateCardSubviews(deck.Cards);
         
         private void OnCardMoved(CardMoveData moveData)
         {
@@ -75,6 +74,8 @@ namespace Views.Cards
             
             _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform, insertAction);
         }
+        
+        private void OnCardOpened(Card card) => _cardSubviewById[card.Id].ShowCard();
         
         private void OnCapturedCardUpdated(CardInputData cardInputData)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game;
 using Game.Model;
 using Game.Settings;
@@ -14,6 +15,7 @@ namespace Models
         
         public event Action<Deck> DeckCreated;
         public event Action<CardMoveData> CardMoved;
+        public event Action<Card> CardOpened;
         
         public Transform[] ColumnPoints { get; private set; }
         
@@ -48,6 +50,11 @@ namespace Models
             
             if (!isTurnAvailable)
                 return false;
+            
+            int sourceColumnId = _gameField.FindColumn(card);
+            List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
+            if (sourceColumn.Count > 1)
+                CardOpened?.Invoke(sourceColumn[sourceColumn.Count - 2]);
 
             MoveCard(new CardMoveData
             {
@@ -56,6 +63,7 @@ namespace Models
                 TargetPosition = Vector3.up * -rowIndex * SpiderSettings.DealingSettings.SmallVerticalOffset,
                 TargetLayer = rowIndex,
                 TargetStateIsOpen = true,
+                SourceZone = CardsZone.Main,
                 TargetZone = CardsZone.Main,
                 ColumnId = targetColumnId,
                 TargetParent = ColumnPoints[targetColumnId],

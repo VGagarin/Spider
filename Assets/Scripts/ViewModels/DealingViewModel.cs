@@ -52,6 +52,7 @@ namespace ViewModels
                     DelayBeforeMove = delay,
                     TargetPosition = Vector3.up * yOffset,
                     TargetLayer = rowIndex,
+                    SourceZone = CardsZone.Waiting,
                     TargetZone = CardsZone.Main,
                     ColumnId = columnIndex,
                     TargetParent = ColumnPoints[columnIndex],

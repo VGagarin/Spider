@@ -24,33 +24,32 @@ namespace Game
 
         public void MoveCard(CardMoveData moveData)
         {
-            switch (moveData.TargetZone)
-            {
-                case CardsZone.Waiting:
-                    throw new Exception($"Некорректная {nameof(CardMoveData.TargetZone)} в {nameof(CardMoveData)}");
-                case CardsZone.Main:
-                    MoveCardFromWaitingToMain(moveData.CardToMove, moveData.ColumnId);
-                    break;
-                case CardsZone.Discard:
-                    MoveCardFromMainToDiscard(moveData.CardToMove, moveData.ColumnId);
-                    break;
-                default:
-                    throw new Exception($"Некорректная {nameof(CardMoveData.TargetZone)} в {nameof(CardMoveData)}");
-            }
+            if (moveData.TargetZone == CardsZone.Main)
+                MoveCardToMain(moveData);
+            if (moveData.TargetZone == CardsZone.Discard)
+                MoveCardToDiscard(moveData);
         }
 
-        public void MoveCardFromWaitingToMain(Card card, int column)
+        private void MoveCardToMain(CardMoveData moveData)
         {
-            _waitingZone.Remove(card);
-            _mainZone[column].Add(card);
+            Card card = moveData.CardToMove;
+            
+            if (moveData.SourceZone == CardsZone.Waiting)
+                _waitingZone.Remove(card);
+            if (moveData.SourceZone == CardsZone.Main)
+                _mainZone[FindColumn(card)].Remove(card);
+            
+            _mainZone[moveData.ColumnId].Add(card);
         }
-        
-        public void MoveCardFromMainToDiscard(Card card, int moveDataColumnIndex)
+
+        private void MoveCardToDiscard(CardMoveData moveData)
         {
             
         }
 
         public int GetColumnLength(int columnId) => _mainZone[columnId].Count;
+        
+        public List<Card> GetColumn(int columnId) => _mainZone[columnId];
         
         public bool IsTurnAvailable(Card card, int targetColumnIndex)
         {
