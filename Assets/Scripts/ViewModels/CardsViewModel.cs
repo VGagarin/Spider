@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game;
 using Game.Model;
@@ -14,9 +15,11 @@ namespace ViewModels
         public event Action<Deck> DeckCreated;
         public event Action<CardMoveData> CardMoved;
         public event Action<Card> CardOpened;
-        public event Action<CardInputData> CapturedCardUpdated; 
+        public event Action<List<Card>> CapturedCardsUpdated; 
         public event Action<CardInputData> CardReturned; 
         public event Action<Vector3> MousePositionUpdated;
+
+        private CardsModel _cardsModel;
 
         public CardsViewModel()
         {
@@ -49,14 +52,18 @@ namespace ViewModels
         
         private void OnCapturedCardUpdated(CardInputData cardInputData)
         {
-            CapturedCardUpdated?.Invoke(cardInputData);
+            //TODO захватывать колонну карт
+            _cardsModel = ModelRepository.GetModel<CardsModel>();
+            List<Card> capturedCards = _cardsModel.GetCardColumn(cardInputData.CardId, cardInputData.ColumnId);
+
+            CapturedCardsUpdated?.Invoke(capturedCards);
         }
 
         private void OnReleasedCardUpdated(CardInputData cardInputData)
         {
-            CardsModel cardsModel = ModelRepository.GetModel<CardsModel>();
+            _cardsModel = ModelRepository.GetModel<CardsModel>();
 
-            bool isTurnPerformed = cardsModel.PerformTurnIfPossible(cardInputData.CardId, cardInputData.ColumnId);
+            bool isTurnPerformed = _cardsModel.PerformTurnIfPossible(cardInputData.CardId, cardInputData.ColumnId);
 
             if (!isTurnPerformed)
             {
@@ -71,11 +78,10 @@ namespace ViewModels
 
         ~CardsViewModel()
         {
-            CardsModel cardsModel = ModelRepository.GetModel<CardsModel>();
             InputModel inputModel = ModelRepository.GetModel<InputModel>();
             
-            cardsModel.DeckCreated -= OnDeckCreated;
-            cardsModel.CardMoved -= OnCardMoved;
+            _cardsModel.DeckCreated -= OnDeckCreated;
+            _cardsModel.CardMoved -= OnCardMoved;
             
             inputModel.CapturedCardUpdated -= OnCapturedCardUpdated;
             inputModel.ReleasedCardUpdated -= OnReleasedCardUpdated;

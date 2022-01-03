@@ -73,5 +73,12 @@ namespace Models
         public int GetCardColumnId(int cardId) => _gameField.FindColumn(_deck.GetCardById(cardId));
 
         public bool CardCanBeCaptured(int cardId) => _gameField.CardCanBeCaptured(_deck.GetCardById(cardId));
+
+        public List<Card> GetCardColumn(int cardId, int columnId)
+        {
+            List<Card> column = _gameField.GetColumn(columnId);
+            int cardRow = column.IndexOf(_deck.GetCardById(cardId));
+            return column.GetRange(cardRow, column.Count - cardRow);
+        }
     }
 }

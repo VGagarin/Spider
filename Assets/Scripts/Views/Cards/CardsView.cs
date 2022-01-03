@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game;
 using Game.Model;
 using Game.Settings;
@@ -15,27 +17,26 @@ namespace Views.Cards
         [SerializeField] private Transform _createPoint;
         
         private readonly Dictionary<int, CardSubview> _cardSubviewById = new Dictionary<int, CardSubview>();
-        private List<CardSubview> _views;
+        
         private CardMover _cardMover;
-
-        private CardSubview _attachedSubview;
-        private Vector3 _offset;
         private Camera _mainCamera;
-        private Vector3 _startLocalPosition;
+        private CardsDragger _cardsAttacher;
 
         protected override void Initialize()
         {
             _mainCamera = Camera.main;
-            
+
             DealingSettings settings = SpiderSettings.DealingSettings;
             _cardMover = new CardMover(settings.CardSpeed, settings.Easing);
+            
+            _cardsAttacher = new CardsDragger(_mainCamera, _cardMover);
             
             _viewModel.DeckCreated += OnDeckCreated;
             _viewModel.CardMoved += OnCardMoved;
             _viewModel.CardOpened += OnCardOpened;
 
-            _viewModel.CapturedCardUpdated += OnCapturedCardUpdated;
-            _viewModel.CardReturned += OnReturnCard;
+            _viewModel.CapturedCardsUpdated += OnCapturedCardsUpdated;
+            _viewModel.CardReturned += OnCardReturn;
             _viewModel.MousePositionUpdated += OnMousePositionUpdated;
         }
 
@@ -45,8 +46,8 @@ namespace Views.Cards
             _viewModel.CardMoved -= OnCardMoved;
             _viewModel.CardOpened -= OnCardOpened;
             
-            _viewModel.CapturedCardUpdated -= OnCapturedCardUpdated;
-            _viewModel.CardReturned -= OnReturnCard;
+            _viewModel.CapturedCardsUpdated -= OnCapturedCardsUpdated;
+            _viewModel.CardReturned -= OnCardReturn;
             _viewModel.MousePositionUpdated -= OnMousePositionUpdated;
         }
 
@@ -55,9 +56,9 @@ namespace Views.Cards
         private void OnCardMoved(CardMoveData moveData)
         {
             CardSubview card = _cardSubviewById[moveData.CardToMove.Id];
-            
-            _attachedSubview = null;
 
+            _cardsAttacher.Clear();
+            
             float delayBeforeMove = moveData.DelayBeforeMove;
             Vector3 targetPosition = moveData.TargetPosition;
             Transform cardTransform = card.transform;
@@ -77,50 +78,18 @@ namespace Views.Cards
         
         private void OnCardOpened(Card card) => _cardSubviewById[card.Id].ShowCard();
         
-        private void OnCapturedCardUpdated(CardInputData cardInputData)
+        private void OnCapturedCardsUpdated(List<Card> cards)
         {
-            if (!_cardSubviewById[cardInputData.CardId].IsMovable)
-                return;
-            
-            _attachedSubview = _cardSubviewById[cardInputData.CardId];
-            _attachedSubview.Layer += SpiderSettings.GameRules.CardsInDeck;
-
-            Transform attachedSubviewTransform = _attachedSubview.transform;
-            _startLocalPosition = attachedSubviewTransform.localPosition;
-            _offset = attachedSubviewTransform.position - _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            _offset.z = 0;
+            CardSubview[] attachedCards = cards.Select(card => _cardSubviewById[card.Id]).ToArray();
+            Array.ForEach(attachedCards, _cardsAttacher.AttachSubview);
         }
 
-        private void OnReturnCard(CardInputData cardInputData)
-        {
-            CardSubview cachedSubview = _attachedSubview;
-            InsertAction insertAction = new InsertAction
-            {
-                Action = () => cachedSubview.Layer -= SpiderSettings.GameRules.CardsInDeck,
-                RelativeTime = 1f
-            };
-            
-            _cardMover.MoveToLocalPositionAfterDelay(0, _startLocalPosition, _attachedSubview.transform, insertAction);
-            
-            _attachedSubview = null;
-        }
+        private void OnCardReturn(CardInputData cardInputData) => _cardsAttacher.ReturnAllAttaches();
 
-        private void OnMousePositionUpdated(Vector3 mousePosition)
-        {
-            if (_attachedSubview)
-            {
-                Vector3 screenToWorldPoint = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-                
-                Transform attachedTransform = _attachedSubview.transform;
-                screenToWorldPoint.z = attachedTransform.position.z;
-                attachedTransform.position = screenToWorldPoint + _offset;
-            }
-        }
+        private void OnMousePositionUpdated(Vector3 mousePosition) => _cardsAttacher.UpdatePositions(mousePosition);
 
         private void CreateCardSubviews(Card[] cards)
         {
-            _views = new List<CardSubview>();
-            
             Transform parent = transform;
 
             for (int i = 0; i < cards.Length; i++)
@@ -129,7 +98,6 @@ namespace Views.Cards
                 cardSubview.SetCard(cards[i]);
 
                 _cardSubviewById[cards[i].Id] = cardSubview;
-                _views.Add(cardSubview);
 
                 int cardsToFirstDeal = SpiderSettings.GameRules.CardsToDeal;
                 cardSubview.Layer = i <= cardsToFirstDeal ? cardsToFirstDeal - i : -i;
