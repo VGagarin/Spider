@@ -44,7 +44,7 @@ namespace Models
             Card card = _deck.GetCardById(cardId);
             
             bool isTurnAvailable = _gameField.IsTurnAvailable(card, targetColumnId);
-            int rowIndex = _gameField.GetColumnLength(targetColumnId);
+            int targetRowIndex = _gameField.GetColumnLength(targetColumnId);
             
             if (!isTurnAvailable)
                 return false;
@@ -52,20 +52,10 @@ namespace Models
             int sourceColumnId = _gameField.FindColumn(card);
             List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
             if (sourceColumn.Count > 1)
-                CardOpened?.Invoke(sourceColumn[sourceColumn.Count - 2]);
+                CardOpened?.Invoke(sourceColumn[sourceColumn.IndexOf(card) - 1]);
 
-            MoveCard(new CardMoveData
-            {
-                CardToMove = card,
-                TargetPosition = Vector3.up * -rowIndex * SpiderSettings.DealingSettings.SmallVerticalOffset,
-                TargetLayer = rowIndex,
-                TargetStateIsOpen = true,
-                SourceZone = CardsZone.Main,
-                TargetZone = CardsZone.Main,
-                ColumnId = targetColumnId,
-                TargetParent = ColumnPoints[targetColumnId],
-                IsLocalMove = true
-            });
+            List<Card> cardColumn = GetCardColumn(cardId, sourceColumnId);
+            MoveCardColumn(cardColumn, targetRowIndex, targetColumnId);
 
             return true;
         }
@@ -79,6 +69,27 @@ namespace Models
             List<Card> column = _gameField.GetColumn(columnId);
             int cardRow = column.IndexOf(_deck.GetCardById(cardId));
             return column.GetRange(cardRow, column.Count - cardRow);
+        }
+
+        private void MoveCardColumn(IReadOnlyList<Card> column, int targetRowId, int targetColumnId)
+        {
+            for (int i = 0; i < column.Count; i++)
+            {
+                int row = targetRowId + i;
+
+                MoveCard(new CardMoveData
+                {
+                    CardToMove = column[i],
+                    TargetPosition = Vector3.up * -row * SpiderSettings.DealingSettings.SmallVerticalOffset,
+                    TargetLayer = row,
+                    TargetStateIsOpen = true,
+                    SourceZone = CardsZone.Main,
+                    TargetZone = CardsZone.Main,
+                    ColumnId = targetColumnId,
+                    TargetParent = ColumnPoints[targetColumnId],
+                    IsLocalMove = true
+                });
+            }
         }
     }
 }

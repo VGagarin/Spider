@@ -90,14 +90,15 @@ namespace Game
             if (cardIsUpper)
                 return true;
             
-            Card previousCard = card;
-            for (int i = cardRow + 1; i < column.Count; previousCard = column[i], i++)
+            for (int i = cardRow + 1; i < column.Count; i++)
             {
-                if (previousCard.Value == column[i].Value - 1 && previousCard.Suit == column[i].Suit)
-                    return true;
+                bool isValuesNotAttached = column[i - 1].Value != column[i].Value - 1;
+                bool isSuitsNotEqual = column[i - 1].Suit != column[i].Suit;
+                if (isValuesNotAttached || isSuitsNotEqual)
+                    return false;
             }
 
-            return false;
+            return true;
         }
 
         private void InitializeMainZone()
