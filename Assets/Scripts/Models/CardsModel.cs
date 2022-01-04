@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game;
 using Game.Model;
+using Game.Settings;
 using Models.Base;
 
 namespace Models
@@ -107,22 +108,26 @@ namespace Models
                 
                 if (result)
                 {
-                    MoveCardColumn(potentialEndedSequence, CardsZone.Discard);
+                    float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
+                    potentialEndedSequence.Reverse();
+                    MoveCardColumn(potentialEndedSequence, CardsZone.Discard, delay: delayBetweenCards);
                 }
             }
         }
 
-        private void MoveCardColumn(IEnumerable<Card> column, CardsZone targetZone, int targetColumnId = 0)
+        private void MoveCardColumn(IEnumerable<Card> column, CardsZone targetZone, int columnId = 0, float delay = 0)
         {
+            int i = 0;
             foreach (Card card in column)
             {
                 MoveCard(new BaseCardMoveData
                 {
                     CardId = card.Id,
+                    DelayBeforeMove = ++i * delay,
                     TargetStateIsOpen = true,
                     SourceZone = CardsZone.Main,
                     TargetZone = targetZone,
-                    ColumnId = targetColumnId
+                    ColumnId = columnId
                 });
             }
         }

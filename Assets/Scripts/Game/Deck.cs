@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Extensions;
 using Game.Model;
+using Game.Settings;
 using Random = UnityEngine.Random;
 
 namespace Game
@@ -9,8 +11,6 @@ namespace Game
     internal class Deck
     {
         private static void Shuffle(ref Card[] cards) => cards = cards.OrderBy(card => Random.value).ToArray();
-        
-        private const int CardsInDeck = 104;
 
         private readonly Dictionary<int, Card> _cardById = new Dictionary<int, Card>();
         
@@ -30,17 +30,24 @@ namespace Game
 
         private void CreateDeck()
         {
-            _cards = new Card[CardsInDeck];
+            _cards = new Card[SpiderSettings.GameRules.CardsInDeck];
+
+            IEnumerator<Suit> loopedIncludedValues = SpiderSettings.GameRules.Suits.ToArray().LoopedIncludedValues();
 
             int i = 0;
-            foreach (Suit suit in Enum.GetValues(typeof(Suit)))
+            while (i < SpiderSettings.GameRules.CardsInDeck)
             {
+                loopedIncludedValues.MoveNext();
+                Suit suit = loopedIncludedValues.Current;
+                
                 foreach (Value value in Enum.GetValues(typeof(Value)))
                 {
                     _cards[i++] = CreateCard(value, suit, i);
                     _cards[i++] = CreateCard(value, suit, i);
                 }
             }
+            
+            loopedIncludedValues.Dispose();
 
             Shuffle(ref _cards);
         }

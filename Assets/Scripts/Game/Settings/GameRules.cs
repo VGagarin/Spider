@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Game.Model;
+using UnityEngine;
 
 namespace Game.Settings
 {
@@ -6,13 +8,15 @@ namespace Game.Settings
     internal sealed class GameRules : ScriptableObject
     {
         public const string Path = nameof(GameRules);
-        
+
+        [SerializeField] private List<Suit> _suits;
         [SerializeField] private int _cardsInDeck = 104;
         [SerializeField] private int _columns = 10;
         [SerializeField] private int _cardsToOpen = 10;
         [SerializeField] private int _cardsToDeal = 54;
         [SerializeField] private int _cardsToAdditionalDeal = 10;
-        
+
+        public List<Suit> Suits => _suits;
         public int CardsInDeck => _cardsInDeck;
         public int Columns => _columns;
         public int CardsToOpen => _cardsToOpen;

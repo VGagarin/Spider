@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba3601c8b6234a43995ee2e20db8a14c, type: 3}
   m_Name: GameRules
   m_EditorClassIdentifier: 
+  _suits: 00000000
   _cardsInDeck: 104
-  _columnCounts: 10
+  _columns: 10
   _cardsToOpen: 10
-  _cardsToFirstDeal: 54
+  _cardsToDeal: 54
+  _cardsToAdditionalDeal: 10

@@ -52,8 +52,10 @@ namespace ViewModels
         
         private void OnCardMoved(CardMoveData cardMoveData)
         {
-            Vector3 position = Vector3.up * -cardMoveData.RowId * SpiderSettings.DealingSettings.SmallVerticalOffset;
             IGameZone targetZone = ModelRepository.GetModel<GameZonesModel>().GetZoneByType(cardMoveData.TargetZone);
+            Vector3 position = Vector3.zero;
+            if (cardMoveData.TargetZone == CardsZone.Main)
+                position = Vector3.up * -cardMoveData.RowId * SpiderSettings.DealingSettings.SmallVerticalOffset;
 
             CardPositionData positionData = new CardPositionData
             {
