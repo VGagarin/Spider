@@ -17,9 +17,9 @@ namespace Models
         public event Action<CardMoveData> CardMoved;
         public event Action<Card> CardOpened;
         
-        public void CreateDeck()
+        public void SetDeck(Deck deck)
         {
-            _deck = new Deck();
+            _deck = deck;
             _gameField = new GameField();
             _gameField.AddCardsToWaitingZone(_deck.Cards);
             

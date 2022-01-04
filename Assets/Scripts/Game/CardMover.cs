@@ -29,6 +29,7 @@ namespace Game
 
                 float duration = Vector3.Distance(target, card.localPosition) / _cardSpeed;
 
+                card.DOKill();
                 card
                     .DOLocalMove(target, duration)
                     .SetEase(_easing);

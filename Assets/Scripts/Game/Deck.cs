@@ -18,9 +18,17 @@ namespace Game
 
         public Card[] Cards => _cards;
 
-        public Deck()
+        public Deck(List<Suit> suits, bool needShuffle = true)
         {
-            CreateDeck();
+            CreateDeck(suits);
+            
+            if (needShuffle)
+                Shuffle(ref _cards);
+        }
+
+        public Deck(Card[] cards)
+        {
+            _cards = cards;
         }
 
         public Card GetCardById(int id)
@@ -28,11 +36,16 @@ namespace Game
             return _cardById[id];
         }
 
-        private void CreateDeck()
+        public void SwapCards(int i1, int i2)
+        {
+            (_cards[i1], _cards[i2]) = (_cards[i2], _cards[i1]);
+        }
+
+        private void CreateDeck(List<Suit> suits)
         {
             _cards = new Card[SpiderSettings.GameRules.CardsInDeck];
-
-            IEnumerator<Suit> loopedIncludedValues = SpiderSettings.GameRules.Suits.ToArray().LoopedIncludedValues();
+            
+            using IEnumerator<Suit> loopedIncludedValues = suits.ToArray().LoopedIncludedValues();
 
             int i = 0;
             while (i < SpiderSettings.GameRules.CardsInDeck)
@@ -43,13 +56,8 @@ namespace Game
                 foreach (Value value in Enum.GetValues(typeof(Value)))
                 {
                     _cards[i++] = CreateCard(value, suit, i);
-                    _cards[i++] = CreateCard(value, suit, i);
                 }
             }
-            
-            loopedIncludedValues.Dispose();
-
-            Shuffle(ref _cards);
         }
 
         private Card CreateCard(Value value, Suit suit, int id)
