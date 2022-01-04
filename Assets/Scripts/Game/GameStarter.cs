@@ -11,7 +11,7 @@ namespace Game
         private const int CardsCount = 6;
 
         [SerializeField] private CardsView _cardsView;
-        [SerializeField] private DealingView _dealingView;
+        [SerializeField] private GameZonesView _gameZonesView;
 
         private void Awake()
         {
@@ -24,7 +24,8 @@ namespace Game
         {
             new GameObject(nameof(InputView)).AddComponent<InputView>();
             Instantiate(_cardsView);
-            Instantiate(_dealingView);
+            Instantiate(_gameZonesView);
+            new GameObject(nameof(DealingView)).AddComponent<DealingView>();
         }
 
         private void FillModels()

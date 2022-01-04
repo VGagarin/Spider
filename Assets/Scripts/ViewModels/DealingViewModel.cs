@@ -16,8 +16,6 @@ namespace ViewModels
         private readonly CardsModel _cardsModel;
         private readonly InputModel _inputModel;
 
-        public Transform[] ColumnPoints { get; set; }
-        
         public DealingViewModel()
         {
             _cardsModel = ModelRepository.GetModel<CardsModel>();
@@ -32,7 +30,6 @@ namespace ViewModels
 
         private void OnDeckCreated(Deck deck)
         {
-            _cardsModel.UpdateColumnPoints(ColumnPoints);
             Deal(deck);
         }
 

@@ -14,7 +14,6 @@ namespace Views.Cards
     internal sealed class CardsView : BaseView<CardsViewModel>
     {
         [SerializeField] private CardSubview _cardSubview;
-        [SerializeField] private Transform _createPoint;
         
         private readonly Dictionary<int, CardSubview> _cardSubviewById = new Dictionary<int, CardSubview>();
         
@@ -51,18 +50,18 @@ namespace Views.Cards
             _viewModel.MousePositionUpdated -= OnMousePositionUpdated;
         }
 
-        private void OnDeckCreated(Deck deck) => CreateCardSubviews(deck.Cards);
+        private void OnDeckCreated(Deck deck, Transform point) => CreateCardSubviews(deck.Cards, point);
         
-        private void OnCardMoved(CardMoveData moveData)
+        private void OnCardMoved(CardMoveData moveData, CardPositionData positionData)
         {
             CardSubview card = _cardSubviewById[moveData.CardToMove.Id];
 
             _cardsAttacher.Clear();
             
             float delayBeforeMove = moveData.DelayBeforeMove;
-            Vector3 targetPosition = moveData.TargetPosition;
+            Vector3 targetPosition = positionData.LocalPosition;
             Transform cardTransform = card.transform;
-            cardTransform.parent = moveData.TargetParent;
+            cardTransform.parent = positionData.Parent;
             
             if (moveData.TargetStateIsOpen)
                 card.ShowCard();
@@ -88,13 +87,11 @@ namespace Views.Cards
 
         private void OnMousePositionUpdated(Vector3 mousePosition) => _cardsAttacher.UpdatePositions(mousePosition);
 
-        private void CreateCardSubviews(Card[] cards)
+        private void CreateCardSubviews(Card[] cards, Transform point)
         {
-            Transform parent = transform;
-
             for (int i = 0; i < cards.Length; i++)
             {
-                CardSubview cardSubview = Instantiate(_cardSubview, _createPoint.position, Quaternion.identity, parent);
+                CardSubview cardSubview = Instantiate(_cardSubview, point.position, Quaternion.identity, point);
                 cardSubview.SetCard(cards[i]);
 
                 _cardSubviewById[cards[i].Id] = cardSubview;

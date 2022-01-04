@@ -44,7 +44,10 @@ namespace Game
 
         private void MoveCardToDiscard(CardMoveData moveData)
         {
+            List<Card> column = GetColumn(moveData.CardToMove);
+            column.Remove(moveData.CardToMove);
             
+            _discardZone.Add(moveData.CardToMove);
         }
 
         public int GetColumnLength(int columnId) => _mainZone[columnId].Count;

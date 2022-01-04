@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Game;
 using Game.Model;
+using Game.Settings;
 using Models;
 using Models.Base;
+using Models.GameZones;
 using UnityEngine;
 using ViewModels.Base;
+using Views.Cards;
 
 namespace ViewModels
 {
     internal class CardsViewModel : BaseViewModel
     {
-        public event Action<Deck> DeckCreated;
-        public event Action<CardMoveData> CardMoved;
+        public event Action<Deck, Transform> DeckCreated;
+        public event Action<CardMoveData, CardPositionData> CardMoved;
         public event Action<Card> CardOpened;
         public event Action<List<Card>> CapturedCardsUpdated; 
         public event Action<CardInputData> CardReturned; 
@@ -42,17 +45,27 @@ namespace ViewModels
 
         private void OnDeckCreated(Deck deck)
         {
-            DeckCreated?.Invoke(deck);
+            WaitingZone waitingZone = ModelRepository.GetModel<GameZonesModel>().WaitingZone;
+
+            DeckCreated?.Invoke(deck, waitingZone.GetPoint());
         }
         
         private void OnCardMoved(CardMoveData cardMoveData)
         {
-            CardMoved?.Invoke(cardMoveData);
+            Vector3 position = Vector3.up * -cardMoveData.RowId * SpiderSettings.DealingSettings.SmallVerticalOffset;
+            IGameZone targetZone = ModelRepository.GetModel<GameZonesModel>().GetZoneByType(cardMoveData.TargetZone);
+
+            CardPositionData positionData = new CardPositionData
+            {
+                LocalPosition = position,
+                Parent = targetZone.GetPoint(cardMoveData.ColumnId)
+            };
+
+            CardMoved?.Invoke(cardMoveData, positionData);
         }
         
         private void OnCapturedCardUpdated(CardInputData cardInputData)
         {
-            //TODO захватывать колонну карт
             _cardsModel = ModelRepository.GetModel<CardsModel>();
             List<Card> capturedCards = _cardsModel.GetCardColumn(cardInputData.CardId, cardInputData.ColumnId);
 

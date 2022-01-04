@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Model;
 using Models;
 using Models.Base;
+using Models.GameZones;
 using UnityEngine;
 using ViewModels.Base;
 
@@ -68,7 +69,7 @@ namespace ViewModels
 
         private int FindColumnIndex(Vector3 position)
         {
-            Transform[] columnPositions = ModelRepository.GetModel<CardsModel>().ColumnPoints;
+            Transform[] columnPositions = ModelRepository.GetModel<GameZonesModel>().MainZonePoints;
             float[] horizontalPositions = columnPositions.Select(columnPosition => columnPosition.position.x).ToArray();
 
             float halfDistanceBetweenColumns = (horizontalPositions[1] - horizontalPositions[0]) / 2f;

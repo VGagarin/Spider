@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game;
 using Game.Model;
-using Game.Settings;
 using Models.Base;
-using UnityEngine;
 
 namespace Models
 {
@@ -16,8 +15,6 @@ namespace Models
         public event Action<Deck> DeckCreated;
         public event Action<CardMoveData> CardMoved;
         public event Action<Card> CardOpened;
-        
-        public Transform[] ColumnPoints { get; private set; }
         
         public void CreateDeck()
         {
@@ -35,17 +32,6 @@ namespace Models
             MoveCard(cardMoveData);
         }
 
-        public void MoveCard(CardMoveData moveData)
-        {
-            _gameField.MoveCard(moveData);
-            CardMoved?.Invoke(moveData);
-        }
-
-        public void UpdateColumnPoints(Transform[] points)
-        {
-            ColumnPoints = points;
-        }
-
         public bool PerformTurnIfPossible(int cardId, int targetColumnId)
         {
             Card card = _deck.GetCardById(cardId);
@@ -55,12 +41,8 @@ namespace Models
                 return false;
             
             int sourceColumnId = _gameField.FindColumn(card);
-            List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
-            if (sourceColumn.Count > 1)
-                CardOpened?.Invoke(sourceColumn[sourceColumn.IndexOf(card) - 1]);
-
             List<Card> cardColumn = GetCardColumn(cardId, sourceColumnId);
-            MoveCardColumn(cardColumn, targetColumnId);
+            MoveCardColumn(cardColumn, CardsZone.Main, targetColumnId);
 
             return true;
         }
@@ -86,8 +68,51 @@ namespace Models
         {
             return _gameField.GetCardsInWaiting();
         }
+        
+        private void MoveCard(CardMoveData moveData)
+        {
+            //TODO инкапсулировать проверку на открытие карты
+            if (moveData.SourceZone == CardsZone.Main)
+            {
+                int sourceColumnId = _gameField.FindColumn(moveData.CardToMove);
+                List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
+                int sourceCardIndex = sourceColumn.IndexOf(moveData.CardToMove);
+                if (sourceCardIndex > 0)
+                    CardOpened?.Invoke(sourceColumn[sourceCardIndex - 1]);
+            }
+            
+            _gameField.MoveCard(moveData);
+            CardMoved?.Invoke(moveData);
+            
+            //TODO инкапсулировать проверку собранной стопки
+            //TODO учитывать, что часть верхних карт может быть скрыта
+            if (moveData.TargetZone != CardsZone.Main)
+                return;
+            
+            List<Card> column = _gameField.GetColumn(moveData.CardToMove);
+            Value[] values = (Value[])Enum.GetValues(typeof(Value));
+            
+            bool result = true;
+            if (column.Last().Value == Value.Ace && column.Count >= values.Length)
+            {
+                Suit suit = column.Last().Suit;
+                List<Card> potentialEndedSequence = column.GetRange(column.Count - values.Length, values.Length);
+                
+                for (int i = 0; i < values.Length; i++)
+                {
+                    Card card = potentialEndedSequence[i];
+                    if (card.Suit != suit || card.Value != values[i])
+                        result = false;
+                }
+                
+                if (result)
+                {
+                    MoveCardColumn(potentialEndedSequence, CardsZone.Discard);
+                }
+            }
+        }
 
-        private void MoveCardColumn(IEnumerable<Card> column, int targetColumnId)
+        private void MoveCardColumn(IEnumerable<Card> column, CardsZone targetZone, int targetColumnId = 0)
         {
             foreach (Card card in column)
             {
@@ -96,7 +121,7 @@ namespace Models
                     CardId = card.Id,
                     TargetStateIsOpen = true,
                     SourceZone = CardsZone.Main,
-                    TargetZone = CardsZone.Main,
+                    TargetZone = targetZone,
                     ColumnId = targetColumnId
                 });
             }
@@ -110,13 +135,11 @@ namespace Models
             {
                 CardToMove = _deck.GetCardById(baseMoveData.CardId),
                 DelayBeforeMove = baseMoveData.DelayBeforeMove,
-                TargetPosition = Vector3.up * -rowId * SpiderSettings.DealingSettings.SmallVerticalOffset,
                 TargetLayer = rowId,
                 SourceZone = baseMoveData.SourceZone,
                 TargetZone = baseMoveData.TargetZone,
                 ColumnId = baseMoveData.ColumnId,
-                TargetParent = ColumnPoints[baseMoveData.ColumnId],
-                IsLocalMove = true,
+                RowId = rowId,
                 TargetStateIsOpen = baseMoveData.TargetStateIsOpen
             };
         }

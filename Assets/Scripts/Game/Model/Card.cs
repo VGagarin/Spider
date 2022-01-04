@@ -1,5 +1,4 @@
 ﻿using System;
-using Game.DataTypes;
 using UnityEngine;
 
 namespace Game.Model
