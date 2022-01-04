@@ -67,7 +67,7 @@ namespace Views.Cards
 
             Vector3 position = attachData.StartLocalPosition;
             
-            _cardMover.MoveToLocalPositionAfterDelay(0, position, attachData.Subview.transform, insertAction);
+            _cardMover.MoveToLocalPositionAfterDelay(0, position, attachData.Subview.transform, null, insertAction);
         }
 
         private void UpdatePosition(AttachData attachData, Vector3 mousePosition)

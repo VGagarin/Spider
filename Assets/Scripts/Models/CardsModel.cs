@@ -69,51 +69,6 @@ namespace Models
         {
             return _gameField.GetCardsInWaiting();
         }
-        
-        private void MoveCard(CardMoveData moveData)
-        {
-            //TODO инкапсулировать проверку на открытие карты
-            if (moveData.SourceZone == CardsZone.Main)
-            {
-                int sourceColumnId = _gameField.FindColumn(moveData.CardToMove);
-                List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
-                int sourceCardIndex = sourceColumn.IndexOf(moveData.CardToMove);
-                if (sourceCardIndex > 0)
-                    CardOpened?.Invoke(sourceColumn[sourceCardIndex - 1]);
-            }
-            
-            _gameField.MoveCard(moveData);
-            CardMoved?.Invoke(moveData);
-            
-            //TODO инкапсулировать проверку собранной стопки
-            //TODO учитывать, что часть верхних карт может быть скрыта
-            if (moveData.TargetZone != CardsZone.Main)
-                return;
-            
-            List<Card> column = _gameField.GetColumn(moveData.CardToMove);
-            Value[] values = (Value[])Enum.GetValues(typeof(Value));
-            
-            bool result = true;
-            if (column.Last().Value == Value.Ace && column.Count >= values.Length)
-            {
-                Suit suit = column.Last().Suit;
-                List<Card> potentialEndedSequence = column.GetRange(column.Count - values.Length, values.Length);
-                
-                for (int i = 0; i < values.Length; i++)
-                {
-                    Card card = potentialEndedSequence[i];
-                    if (card.Suit != suit || card.Value != values[i])
-                        result = false;
-                }
-                
-                if (result)
-                {
-                    float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
-                    potentialEndedSequence.Reverse();
-                    MoveCardColumn(potentialEndedSequence, CardsZone.Discard, delay: delayBetweenCards);
-                }
-            }
-        }
 
         private void MoveCardColumn(IEnumerable<Card> column, CardsZone targetZone, int columnId = 0, float delay = 0)
         {
@@ -129,6 +84,53 @@ namespace Models
                     TargetZone = targetZone,
                     ColumnId = columnId
                 });
+            }
+        }
+        
+        private void MoveCard(CardMoveData moveData)
+        {
+            //TODO инкапсулировать проверку на открытие карты
+            if (moveData.SourceZone == CardsZone.Main)
+            {
+                int sourceColumnId = _gameField.FindColumn(moveData.CardToMove);
+                List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
+                int sourceCardIndex = sourceColumn.IndexOf(moveData.CardToMove);
+                if (sourceCardIndex > 0)
+                    CardOpened?.Invoke(sourceColumn[sourceCardIndex - 1]);
+            }
+            
+            if (moveData.TargetZone == CardsZone.Main)
+                moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.CardToMove);
+            
+            _gameField.MoveCard(moveData);
+            CardMoved?.Invoke(moveData);
+        }
+
+        //TODO учитывать, что часть верхних карт может быть скрыта
+        private void CheckColumnForEndingSequence(Card movedCard)
+        {
+            Value[] values = (Value[])Enum.GetValues(typeof(Value));
+            
+            bool result = true;
+            if (movedCard.Value == Value.Ace && _gameField.GetColumn(movedCard).Count >= values.Length)
+            {
+                List<Card> column = _gameField.GetColumn(movedCard);
+                Suit suit = movedCard.Suit;
+                List<Card> potentialEndedSequence = column.GetRange(column.Count - values.Length, values.Length);
+                
+                for (int i = 0; i < values.Length; i++)
+                {
+                    Card card = potentialEndedSequence[i];
+                    if (card.Suit != suit || card.Value != values[i])
+                        result = false;
+                }
+                
+                if (result)
+                {
+                    float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
+                    potentialEndedSequence.Reverse();
+                    MoveCardColumn(potentialEndedSequence, CardsZone.Discard, delay: delayBetweenCards);
+                }
             }
         }
 

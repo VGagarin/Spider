@@ -62,7 +62,7 @@ namespace Views.Cards
             Vector3 targetPosition = positionData.LocalPosition;
             Transform cardTransform = card.transform;
             cardTransform.parent = positionData.Parent;
-            
+
             if (moveData.TargetStateIsOpen)
                 card.ShowCard();
             
@@ -71,8 +71,9 @@ namespace Views.Cards
                 Action = () => card.Layer = moveData.TargetLayer,
                 RelativeTime = 0.3f
             };
-            
-            _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform, insertAction);
+
+            _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform,
+                moveData.MoveCompleted, insertAction);
         }
         
         private void OnCardOpened(Card card) => _cardSubviewById[card.Id].ShowCard();

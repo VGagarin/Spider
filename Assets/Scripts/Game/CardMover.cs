@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DG.Tweening;
@@ -20,7 +22,7 @@ namespace Game
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async void MoveToLocalPositionAfterDelay(float delay, Vector3 target, Transform card,
+        public async void MoveToLocalPositionAfterDelay(float delay, Vector3 target, Transform card, Action endCallback,
             InsertAction insertAction = null)
         {
             try
@@ -29,10 +31,15 @@ namespace Game
 
                 float duration = Vector3.Distance(target, card.localPosition) / _cardSpeed;
 
-                card.DOKill();
-                card
-                    .DOLocalMove(target, duration)
-                    .SetEase(_easing);
+                Sequence sequence = DOTween.Sequence();
+                sequence
+                    .Append(card
+                        .DOLocalMove(target, duration)
+                        .SetEase(_easing))
+                    .AppendCallback(() =>
+                    {
+                        endCallback?.Invoke();
+                    });
 
                 if (insertAction != null)
                 {

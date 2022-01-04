@@ -1,4 +1,6 @@
-﻿namespace Game.Model
+﻿using System;
+
+namespace Game.Model
 {
     internal struct CardMoveData
     {
@@ -10,5 +12,7 @@
         public CardsZone TargetZone { get; set; }
         public int ColumnId { get; set; }
         public int RowId { get; set; }
+        
+        public Action MoveCompleted;
     }
 }
