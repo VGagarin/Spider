@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using Views.Cards;
 
 namespace IO
@@ -10,9 +11,9 @@ namespace IO
         private CardSubview _attachedView;
         private Camera _mainCamera;
 
-        public event Action<int, Vector3> CardTryCaptured;
-        public event Action<int, Vector3> CardReleased;
-        public event Action<int> ClosedCardClicking;
+        public UnityEvent<int, Vector3> CardTryCaptured = new UnityEvent<int, Vector3>();
+        public UnityEvent<int, Vector3> CardReleased = new UnityEvent<int, Vector3>();
+        public UnityEvent<int> ClosedCardClicking = new UnityEvent<int>();
         
         private void Awake()
         {

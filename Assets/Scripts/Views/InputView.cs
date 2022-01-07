@@ -14,22 +14,22 @@ namespace Views
             _mousePositionProvider = gameObject.AddComponent<MousePositionProvider>();
             _cardsInputProvider = gameObject.AddComponent<CardsInputProvider>();
 
-            _mousePositionProvider.MousePositionUpdated += _viewModel.OnMousePositionUpdated;
+            _mousePositionProvider.MousePositionUpdated.AddListener(_viewModel.OnMousePositionUpdated);
 
-            _cardsInputProvider.CardTryCaptured += _viewModel.OnCardTryCaptured;
-            _cardsInputProvider.CardReleased += _viewModel.OnCardReleased;
-            _cardsInputProvider.ClosedCardClicking += _viewModel.OnClosedCardClicking;
+            _cardsInputProvider.CardTryCaptured.AddListener(_viewModel.OnCardTryCaptured);
+            _cardsInputProvider.CardReleased.AddListener(_viewModel.OnCardReleased);
+            _cardsInputProvider.ClosedCardClicking.AddListener(_viewModel.OnClosedCardClicking);
 
             _viewModel.CardCapturedFailed += _cardsInputProvider.CardCapturedFailed;
         }
 
         private void OnDestroy()
         {
-            _mousePositionProvider.MousePositionUpdated -= _viewModel.OnMousePositionUpdated;
+            _mousePositionProvider.MousePositionUpdated.RemoveAllListeners();
 
-            _cardsInputProvider.CardTryCaptured -= _viewModel.OnCardTryCaptured;
-            _cardsInputProvider.CardReleased -= _viewModel.OnCardReleased;
-            _cardsInputProvider.ClosedCardClicking -= _viewModel.OnClosedCardClicking;
+            _cardsInputProvider.CardTryCaptured.RemoveAllListeners();
+            _cardsInputProvider.CardReleased.RemoveAllListeners();
+            _cardsInputProvider.ClosedCardClicking.RemoveAllListeners();
             
             _viewModel.CardCapturedFailed -= _cardsInputProvider.CardCapturedFailed;
         }

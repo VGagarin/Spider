@@ -87,7 +87,7 @@ namespace Models
             if (moveData.TargetZone == CardsZone.Main && moveData.CardToMove.Value == Value.Ace)
                 moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.ColumnId);
             
-            _gameField.MoveCard(moveData);
+            _gameField.MoveCard(ref moveData);
             CardMoved?.Invoke(moveData);
         }
 

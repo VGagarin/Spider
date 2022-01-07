@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Model;
 using Game.Settings;
+using UnityEngine;
 
 namespace Game
 {
@@ -23,7 +24,7 @@ namespace Game
             _cardStateChanged += cardStateChanged;
         }
 
-        public void MoveCard(CardMoveData moveData)
+        public void MoveCard(ref CardMoveData moveData)
         {
             if (moveData.SourceZone == CardsZone.Main)
                 OpenPreviousCardIfNeeded(moveData.CardToMove);
@@ -32,7 +33,7 @@ namespace Game
                 MoveCardToMain(moveData);
                 
             if (moveData.TargetZone == CardsZone.Discard)
-                MoveCardToDiscard(moveData);
+                MoveCardToDiscard(ref moveData);
         }
 
         public int GetColumnLength(int columnId) => _mainZone[columnId].Count;
@@ -106,15 +107,18 @@ namespace Game
             _mainZone[moveData.ColumnId].Add(card);
         }
 
-        private void MoveCardToDiscard(CardMoveData moveData)
+        private void MoveCardToDiscard(ref CardMoveData moveData)
         {
             Card card = moveData.CardToMove;
             
             List<Card> column = GetColumn(card);
             column.Remove(card);
 
-            SetIsOpenToCard(ref card, false);
-            _discardZone.Add(card);
+            moveData.MoveCompleted += () =>
+            {
+                SetIsOpenToCard(ref card, false);
+                _discardZone.Add(card);
+            };
         }
         
         private void OpenPreviousCardIfNeeded(Card cardToMove)

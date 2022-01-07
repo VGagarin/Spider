@@ -23,13 +23,16 @@ namespace Game
         public async void MoveToLocalPositionAfterDelay(float delay, Vector3 target, Transform card, Action endCallback,
             InsertAction insertAction = null)
         {
+            Sequence sequence = DOTween.Sequence();
+            
             try
             {
+                Vector3 cardLocalPosition = card.localPosition;
+                
                 await Task.Delay(TimeSpan.FromSeconds(delay), _cancellationTokenSource.Token);
-
-                float duration = Vector3.Distance(target, card.localPosition) / _cardSpeed;
-
-                Sequence sequence = DOTween.Sequence();
+                
+                float duration = Vector3.Distance(target, cardLocalPosition) / _cardSpeed;
+                
                 sequence
                     .Append(card
                         .DOLocalMove(target, duration)
@@ -49,13 +52,10 @@ namespace Game
             }
             catch (OperationCanceledException)
             {
-                card?.DOKill();
+                sequence?.Kill();
             }
         }
 
-        ~CardMover()
-        {
-            _cancellationTokenSource?.Cancel();
-        }
+        ~CardMover() => _cancellationTokenSource?.Cancel();
     }
 }

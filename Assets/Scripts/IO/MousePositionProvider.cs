@@ -1,11 +1,11 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace IO
 {
     internal sealed class MousePositionProvider : MonoBehaviour
     {
-        public event Action<Vector3> MousePositionUpdated;
+        public UnityEvent<Vector3> MousePositionUpdated = new UnityEvent<Vector3>();
 
         private Camera _mainCamera;
         

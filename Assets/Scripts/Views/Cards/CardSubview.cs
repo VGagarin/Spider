@@ -16,13 +16,14 @@ namespace Views.Cards
         
         public int CardId => _cardId;
         public bool IsMovable { get; set; }
-        
+
         public int Layer
         {
             get => _layer;
             set
             {
-                _spriteRenderer.sortingOrder = value;
+                if (_spriteRenderer)
+                    _spriteRenderer.sortingOrder = value;
                 _layer = value;
             }
         }
@@ -32,7 +33,7 @@ namespace Views.Cards
             _card = card;
             _cardId = card.Id;
         }
-
+        
         public void SetIsOpen(bool isOpen)
         {
             Sprite sprite = isOpen ? _cardSprites.GetCardSprite(_card) : _cardSprites.GetDefaultSprite();
