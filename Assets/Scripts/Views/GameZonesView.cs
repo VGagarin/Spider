@@ -65,17 +65,17 @@ namespace Views
         {
             Vector2 bounds = FindScreenBounds();
             
-            float offsetFromEdgesOfScreen = SpiderSettings.DealingSettings.OffsetFromEdgesOfScreen;
-            bounds.x += offsetFromEdgesOfScreen;
-            bounds.y -= offsetFromEdgesOfScreen;
-
             int pointsCount = _columnPoints.Length;
             
-            float distanceBetweenColumns = (bounds.y - bounds.x) / (pointsCount - 1);
+            float distanceBetweenColumns = (bounds.y - bounds.x) / (pointsCount + 1);
+            
+            bounds.x += distanceBetweenColumns / 2f;
+            bounds.y -= distanceBetweenColumns / 2f;
+            
             float maxDistanceBetweenColumns = SpiderSettings.DealingSettings.MaxDistanceBetweenColumns;
             if (distanceBetweenColumns > maxDistanceBetweenColumns)
             {
-                float halfDelta = (distanceBetweenColumns - maxDistanceBetweenColumns) / 2f * (pointsCount - 1);
+                float halfDelta = (distanceBetweenColumns - maxDistanceBetweenColumns) / 2f * (pointsCount + 1);
                 bounds.x += halfDelta;
                 bounds.y -= halfDelta;
             }

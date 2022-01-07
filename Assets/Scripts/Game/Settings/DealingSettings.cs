@@ -11,14 +11,12 @@ namespace Game.Settings
         [SerializeField] private float _maxDistanceBetweenColumns = 0.55f;
         [SerializeField] private float _smallVerticalOffset = 0.2f;
         [SerializeField] private float _delayBetweenCardsDeal = 0.05f;
-        [SerializeField] private float _offsetFromEdgesOfScreen = 1f;
         [SerializeField] private float _cardSpeed = 10;
         [SerializeField] private Ease _easing = Ease.InOutSine;
 
         public float MaxDistanceBetweenColumns => _maxDistanceBetweenColumns;
         public float SmallVerticalOffset => _smallVerticalOffset;
         public float DelayBetweenCardsDeal => _delayBetweenCardsDeal;
-        public float OffsetFromEdgesOfScreen => _offsetFromEdgesOfScreen;
         public float CardSpeed => _cardSpeed;
         public Ease Easing => _easing;
     }
