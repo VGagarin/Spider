@@ -68,6 +68,9 @@ namespace Views.Cards
                 Action = () => card.Layer = moveData.TargetLayer,
                 RelativeTime = 0.3f
             };
+
+            card.IsMovable = false;
+            moveData.MoveCompleted += () => card.IsMovable = true;
             
             _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform,
                 moveData.MoveCompleted, insertAction);
