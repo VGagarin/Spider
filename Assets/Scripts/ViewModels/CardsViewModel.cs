@@ -17,7 +17,7 @@ namespace ViewModels
     {
         public event Action<Deck, Transform> DeckCreated;
         public event Action<CardMoveData, CardPositionData> CardMoved;
-        public event Action<Card> CardOpened;
+        public event Action<Card> CardStateChanged;
         public event Action<List<Card>> CapturedCardsUpdated; 
         public event Action<CardInputData> CardReturned; 
         public event Action<Vector3> MousePositionUpdated;
@@ -31,16 +31,16 @@ namespace ViewModels
 
             cardsModel.DeckCreated += OnDeckCreated;
             cardsModel.CardMoved += OnCardMoved;
-            cardsModel.CardOpened += OnCardOpened;
+            cardsModel.CardStateChanged += OnCardStateChanged;
 
             inputModel.CapturedCardUpdated += OnCapturedCardUpdated;
             inputModel.ReleasedCardUpdated += OnReleasedCardUpdated;
             inputModel.MousePositionUpdated += OnMousePositionUpdated;
         }
 
-        private void OnCardOpened(Card card)
+        private void OnCardStateChanged(Card card)
         {
-            CardOpened?.Invoke(card);
+            CardStateChanged?.Invoke(card);
         }
 
         private void OnDeckCreated(Deck deck)
@@ -97,6 +97,7 @@ namespace ViewModels
             
             _cardsModel.DeckCreated -= OnDeckCreated;
             _cardsModel.CardMoved -= OnCardMoved;
+            _cardsModel.CardStateChanged -= OnCardStateChanged;
             
             inputModel.CapturedCardUpdated -= OnCapturedCardUpdated;
             inputModel.ReleasedCardUpdated -= OnReleasedCardUpdated;

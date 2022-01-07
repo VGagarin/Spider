@@ -9,8 +9,6 @@ namespace Game
 {
     internal class GameStarter : MonoBehaviour
     {
-        private const int CardsCount = 6;
-
         [SerializeField] private CardsView _cardsView;
         [SerializeField] private GameZonesView _gameZonesView;
 
@@ -21,7 +19,7 @@ namespace Game
             FillModels();
         }
 
-        protected virtual void CreateViews()
+        private void CreateViews()
         {
             new GameObject(nameof(InputView)).AddComponent<InputView>();
             Instantiate(_cardsView);

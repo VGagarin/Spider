@@ -15,7 +15,10 @@ namespace UI
             public Sprite Sprite;
         }
 
+        [SerializeField] private Sprite _defaultSprite;
         [SerializeField] private CardSpriteInfo[] _cardSprites;
+
+        public Sprite GetDefaultSprite() => _defaultSprite;
 
         public Sprite GetCardSprite(Card card)
         {

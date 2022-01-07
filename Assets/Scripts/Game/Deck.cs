@@ -25,12 +25,7 @@ namespace Game
             if (needShuffle)
                 Shuffle(ref _cards);
         }
-
-        public Deck(Card[] cards)
-        {
-            _cards = cards;
-        }
-
+        
         public Card GetCardById(int id)
         {
             return _cardById[id];

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game;
 using Game.Model;
 using Game.Settings;
@@ -15,13 +14,12 @@ namespace Models
         
         public event Action<Deck> DeckCreated;
         public event Action<CardMoveData> CardMoved;
-        public event Action<Card> CardOpened;
+        public event Action<Card> CardStateChanged;
         
         public void SetDeck(Deck deck)
         {
             _deck = deck;
-            _gameField = new GameField();
-            _gameField.AddCardsToWaitingZone(_deck.Cards);
+            _gameField = new GameField(CardStateChanged, _deck.Cards);
             
             DeckCreated?.Invoke(_deck);
         }
@@ -65,10 +63,7 @@ namespace Models
             return _gameField.GetCardZone(card);
         }
 
-        public List<Card> GetCardsInWaitingZone()
-        {
-            return _gameField.GetCardsInWaiting();
-        }
+        public List<Card> GetCardsInWaitingZone() => _gameField.GetCardsInWaiting();
 
         private void MoveCardColumn(IEnumerable<Card> column, CardsZone targetZone, int columnId = 0, float delay = 0)
         {
@@ -89,48 +84,20 @@ namespace Models
         
         private void MoveCard(CardMoveData moveData)
         {
-            //TODO инкапсулировать проверку на открытие карты
-            if (moveData.SourceZone == CardsZone.Main)
-            {
-                int sourceColumnId = _gameField.FindColumn(moveData.CardToMove);
-                List<Card> sourceColumn = _gameField.GetColumn(sourceColumnId);
-                int sourceCardIndex = sourceColumn.IndexOf(moveData.CardToMove);
-                if (sourceCardIndex > 0)
-                    CardOpened?.Invoke(sourceColumn[sourceCardIndex - 1]);
-            }
-            
-            if (moveData.TargetZone == CardsZone.Main)
-                moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.CardToMove);
+            if (moveData.TargetZone == CardsZone.Main && moveData.CardToMove.Value == Value.Ace)
+                moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.ColumnId);
             
             _gameField.MoveCard(moveData);
             CardMoved?.Invoke(moveData);
         }
 
-        //TODO учитывать, что часть верхних карт может быть скрыта
-        private void CheckColumnForEndingSequence(Card movedCard)
+        private void CheckColumnForEndingSequence(int columnId)
         {
-            Value[] values = (Value[])Enum.GetValues(typeof(Value));
-            
-            bool result = true;
-            if (movedCard.Value == Value.Ace && _gameField.GetColumn(movedCard).Count >= values.Length)
+            if (_gameField.HasEndedSequenceCollected(columnId, out List<Card> potentialEndedSequence))
             {
-                List<Card> column = _gameField.GetColumn(movedCard);
-                Suit suit = movedCard.Suit;
-                List<Card> potentialEndedSequence = column.GetRange(column.Count - values.Length, values.Length);
-                
-                for (int i = 0; i < values.Length; i++)
-                {
-                    Card card = potentialEndedSequence[i];
-                    if (card.Suit != suit || card.Value != values[i])
-                        result = false;
-                }
-                
-                if (result)
-                {
-                    float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
-                    potentialEndedSequence.Reverse();
-                    MoveCardColumn(potentialEndedSequence, CardsZone.Discard, delay: delayBetweenCards);
-                }
+                float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
+                potentialEndedSequence.Reverse();
+                MoveCardColumn(potentialEndedSequence, CardsZone.Discard, delay: delayBetweenCards);
             }
         }
 

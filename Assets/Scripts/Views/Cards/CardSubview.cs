@@ -33,12 +33,12 @@ namespace Views.Cards
             _cardId = card.Id;
         }
 
-        public void ShowCard()
+        public void SetIsOpen(bool isOpen)
         {
-            Sprite sprite = _cardSprites.GetCardSprite(_card);
-            
+            Sprite sprite = isOpen ? _cardSprites.GetCardSprite(_card) : _cardSprites.GetDefaultSprite();
             _spriteRenderer.sprite = sprite;
-            IsMovable = true;
+
+            IsMovable = isOpen;
         }
     }
 }

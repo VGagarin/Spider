@@ -32,7 +32,7 @@ namespace Views.Cards
             
             _viewModel.DeckCreated += OnDeckCreated;
             _viewModel.CardMoved += OnCardMoved;
-            _viewModel.CardOpened += OnCardOpened;
+            _viewModel.CardStateChanged += OnCardStateChanged;
 
             _viewModel.CapturedCardsUpdated += OnCapturedCardsUpdated;
             _viewModel.CardReturned += OnCardReturn;
@@ -43,7 +43,7 @@ namespace Views.Cards
         {
             _viewModel.DeckCreated -= OnDeckCreated;
             _viewModel.CardMoved -= OnCardMoved;
-            _viewModel.CardOpened -= OnCardOpened;
+            _viewModel.CardStateChanged -= OnCardStateChanged;
             
             _viewModel.CapturedCardsUpdated -= OnCapturedCardsUpdated;
             _viewModel.CardReturned -= OnCardReturn;
@@ -63,9 +63,6 @@ namespace Views.Cards
             Transform cardTransform = card.transform;
             cardTransform.parent = positionData.Parent;
 
-            if (moveData.TargetStateIsOpen)
-                card.ShowCard();
-            
             InsertAction insertAction = new InsertAction
             {
                 Action = () => card.Layer = moveData.TargetLayer,
@@ -76,7 +73,7 @@ namespace Views.Cards
                 moveData.MoveCompleted, insertAction);
         }
         
-        private void OnCardOpened(Card card) => _cardSubviewById[card.Id].ShowCard();
+        private void OnCardStateChanged(Card card) => _cardSubviewById[card.Id].SetIsOpen(card.IsOpen);
         
         private void OnCapturedCardsUpdated(List<Card> cards)
         {
