@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28d224d747c45d0b503219f830424dd, type: 3}
   m_Name: CardSprites
   m_EditorClassIdentifier: 
+  _defaultSprite: {fileID: -289723467203535953, guid: e3379020059dd4348848e89f19da3354, type: 3}
   _cardSprites:
   - Card:
       _value: 0

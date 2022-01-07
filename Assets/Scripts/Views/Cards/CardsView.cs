@@ -87,6 +87,9 @@ namespace Views.Cards
 
         private void CreateCardSubviews(Card[] cards, Transform point)
         {
+            float cardSize = _viewModel.DistanceBetweenColumnsInMainZone;
+            _cardSubview.UpdateScaleByHorizontalSize(cardSize);
+            
             for (int i = 0; i < cards.Length; i++)
             {
                 CardSubview cardSubview = Instantiate(_cardSubview, point.position, Quaternion.identity, point);

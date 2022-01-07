@@ -23,6 +23,15 @@ namespace ViewModels
         public event Action<Vector3> MousePositionUpdated;
 
         private CardsModel _cardsModel;
+        
+        public float DistanceBetweenColumnsInMainZone
+        {
+            get
+            {
+                Transform[] mainZonePoints = ModelRepository.GetModel<GameZonesModel>().MainZonePoints;
+                return mainZonePoints[1].position.x - mainZonePoints[0].position.x;
+            }
+        }
 
         public CardsViewModel()
         {

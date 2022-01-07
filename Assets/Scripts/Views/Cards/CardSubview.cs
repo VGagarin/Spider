@@ -1,4 +1,5 @@
-﻿using Game.Model;
+﻿using System;
+using Game.Model;
 using UI;
 using UnityEngine;
 using Views.Base;
@@ -14,6 +15,7 @@ namespace Views.Cards
         private int _layer;
         private int _cardId;
         
+        public float HorizontalSize => transform.localScale.x * _spriteRenderer.sprite.bounds.size.x;
         public int CardId => _cardId;
         public bool IsMovable { get; set; }
 
@@ -27,11 +29,26 @@ namespace Views.Cards
                 _layer = value;
             }
         }
+        
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawWireSphere(transform.position, HorizontalSize / 2f);
+        }
 
         public void SetCard(Card card)
         {
             _card = card;
             _cardId = card.Id;
+        }
+
+        public void UpdateScaleByHorizontalSize(float targetHorizontalSize)
+        {
+            float ratio = targetHorizontalSize / HorizontalSize;
+            
+            Transform cardTransform = transform;
+            
+            Vector3 localScale = cardTransform.localScale;
+            cardTransform.localScale = localScale * ratio;
         }
         
         public void SetIsOpen(bool isOpen)

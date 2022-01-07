@@ -22,8 +22,8 @@ namespace Game
         private void CreateViews()
         {
             new GameObject(nameof(InputView)).AddComponent<InputView>();
-            Instantiate(_cardsView);
             Instantiate(_gameZonesView);
+            Instantiate(_cardsView);
             new GameObject(nameof(DealingView)).AddComponent<DealingView>();
         }
 
