@@ -7,7 +7,7 @@ namespace Views.Cards
 {
     internal sealed class CardSubview : BaseSubview<CardsView>
     {
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private Renderer _renderer;
         [SerializeField] private CardSprites _cardSprites;
 
         private Card _card;
@@ -17,19 +17,24 @@ namespace Views.Cards
         public int CardId => _cardId;
         public bool IsMovable { get; set; }
         
-        private float HorizontalSize => transform.localScale.x * _spriteRenderer.sprite.bounds.size.x;
+        private float HorizontalSize => _renderer.bounds.size.x;
 
         public int Layer
         {
             get => _layer;
             set
             {
-                if (_spriteRenderer)
-                    _spriteRenderer.sortingOrder = value;
+                if (_renderer)
+                    _renderer.sortingOrder = value;
                 _layer = value;
             }
         }
-        
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawWireSphere(transform.position, HorizontalSize / 2f);
+        }
+
         public void SetCard(Card card)
         {
             _card = card;
@@ -51,11 +56,11 @@ namespace Views.Cards
         {
             if (isOpen)
             {
-                CardShaderChanger.ShowCard(_card, _spriteRenderer, _cardSprites);
+                CardShaderChanger.ShowCard(_card, _renderer.material, _cardSprites);
             }
             else
             {
-                CardShaderChanger.HideCard(_spriteRenderer, _cardSprites);
+                CardShaderChanger.HideCard(_renderer.material, _cardSprites);
             }
 
             IsMovable = isOpen;

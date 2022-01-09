@@ -30,14 +30,14 @@ namespace UI
             public Texture Texture;
         }
 
-        [SerializeField] private Sprite _whiteCard;
-        [SerializeField] private Sprite _defaultSprite;
+        [SerializeField] private Texture _whiteCard;
+        [SerializeField] private Texture _CardShort;
         [SerializeField] private CardValueInfo[] _cardValues;
         [SerializeField] private CardSuitInfo[] _cardSuits;
 
-        public Sprite GetWhiteCard() => _whiteCard;
+        public Texture GetWhiteCard() => _whiteCard;
         
-        public Sprite GetDefaultSprite() => _defaultSprite;
+        public Texture GetCardShort() => _CardShort;
         
         public Texture GetValueTexture(Value value)
         {

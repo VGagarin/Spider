@@ -29,7 +29,7 @@ Shader "Custom/CardShader"
         LOD 200
 
         CGPROGRAM
-        #pragma surface surf CardShader
+        #pragma surface surf CardShader alpha
 
         sampler2D _MainTex;
         float4 _MainTex_TexelSize;
@@ -83,7 +83,10 @@ Shader "Custom/CardShader"
             mainColor = lerp(mainColor, valueColor, valueColor.a);
             mainColor = lerp(mainColor, suitColor, suitColor.a);
             mainColor = lerp(mainColor, figureColor, figureColor.a);
-            
+
+            if (mainColor.a == 0)
+                discard;
+
             o.Albedo = mainColor;
             o.Alpha = mainColor.a;
         }

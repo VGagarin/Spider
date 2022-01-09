@@ -20,11 +20,10 @@ namespace Views.Cards
         private static readonly int _suitColor = Shader.PropertyToID(SuitColor);
         private static readonly int _figureTint = Shader.PropertyToID(FigureTint);
 
-        public static void ShowCard(Card card, SpriteRenderer spriteRenderer, CardSprites cardSprites)
+        public static void ShowCard(Card card, Material material, CardSprites cardSprites)
         {
-            Material material = spriteRenderer.material;
-            
-            spriteRenderer.sprite = cardSprites.GetWhiteCard();
+            Texture whiteCard = cardSprites.GetWhiteCard();
+            material.SetTexture(_mainTexture, whiteCard);
 
             Texture valueTexture = cardSprites.GetValueTexture(card.Value);
             material.SetTexture(_valueTexture, valueTexture);
@@ -38,12 +37,11 @@ namespace Views.Cards
             material.SetColor(_figureTint, suitColor);
         }
         
-        public static void HideCard(SpriteRenderer spriteRenderer, CardSprites cardSprites)
+        public static void HideCard(Material material, CardSprites cardSprites)
         {
-            Material material = spriteRenderer.material;
-            
-            spriteRenderer.sprite = cardSprites.GetDefaultSprite();
+            Texture cardShort = cardSprites.GetCardShort();
 
+            material.SetTexture(_mainTexture, cardShort);
             material.SetTexture(_valueTexture, new Texture2D(0, 0));
             material.SetTexture(_suitTexture, new Texture2D(0, 0));
             material.SetTexture(_figureTexture, new Texture2D(0, 0));
