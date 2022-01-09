@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: DealingSettings
   m_EditorClassIdentifier: 
   _maxDistanceBetweenColumns: 1.2
-  _smallVerticalOffset: 0.2
+  _smallVerticalOffset: 0.22
   _delayBetweenCardsDeal: 0.05
-  _offsetFromEdgesOfScreen: 0.35
   _cardSpeed: 10
   _easing: 4

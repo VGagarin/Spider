@@ -12,213 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28d224d747c45d0b503219f830424dd, type: 3}
   m_Name: CardSprites
   m_EditorClassIdentifier: 
-  _defaultSprite: {fileID: -289723467203535953, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  _cardSprites:
-  - Card:
-      _value: 0
-      _suit: 0
-    Sprite: {fileID: -5005236045991921821, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 0
-      _suit: 1
-    Sprite: {fileID: 1015513880522613579, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 0
-      _suit: 2
-    Sprite: {fileID: 4273378062786577517, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 0
-      _suit: 3
-    Sprite: {fileID: -5993310274270542889, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 1
-      _suit: 0
-    Sprite: {fileID: 6463828295129595045, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 1
-      _suit: 1
-    Sprite: {fileID: -1297572194080285004, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 1
-      _suit: 2
-    Sprite: {fileID: -7088014404590163093, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 1
-      _suit: 3
-    Sprite: {fileID: -8120609992666035654, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 2
-      _suit: 0
-    Sprite: {fileID: -222044690269729384, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 2
-      _suit: 1
-    Sprite: {fileID: 4300032086827013196, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 2
-      _suit: 2
-    Sprite: {fileID: -2169895058544258997, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 2
-      _suit: 3
-    Sprite: {fileID: -1557503619298483170, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 3
-      _suit: 0
-    Sprite: {fileID: 226702753830753226, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 3
-      _suit: 1
-    Sprite: {fileID: -5962389079421231736, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 3
-      _suit: 2
-    Sprite: {fileID: -1370661682523340017, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 3
-      _suit: 3
-    Sprite: {fileID: -6251682230944352461, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 4
-      _suit: 0
-    Sprite: {fileID: 4764081960791798808, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 4
-      _suit: 1
-    Sprite: {fileID: -8054094661458634563, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 4
-      _suit: 2
-    Sprite: {fileID: -1933497887715123699, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 4
-      _suit: 3
-    Sprite: {fileID: -3637585315767756026, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 5
-      _suit: 0
-    Sprite: {fileID: -7546874146221198523, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 5
-      _suit: 1
-    Sprite: {fileID: 4057492184055871464, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 5
-      _suit: 2
-    Sprite: {fileID: 5476210624315791439, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 5
-      _suit: 3
-    Sprite: {fileID: -4180478380050184196, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 6
-      _suit: 0
-    Sprite: {fileID: -4180715191943267252, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 6
-      _suit: 1
-    Sprite: {fileID: -8188909564941553941, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 6
-      _suit: 2
-    Sprite: {fileID: -1173080275824419151, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 6
-      _suit: 3
-    Sprite: {fileID: -8873626391699258573, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 7
-      _suit: 0
-    Sprite: {fileID: -2033776217500058201, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 7
-      _suit: 1
-    Sprite: {fileID: 9109323392184880499, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 7
-      _suit: 2
-    Sprite: {fileID: -2731854774048942697, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 7
-      _suit: 3
-    Sprite: {fileID: 1751618896811465624, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 8
-      _suit: 0
-    Sprite: {fileID: 7816579671404485219, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 8
-      _suit: 1
-    Sprite: {fileID: 7686511047796825374, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 8
-      _suit: 2
-    Sprite: {fileID: 3062383759408700104, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 8
-      _suit: 3
-    Sprite: {fileID: -8540854674809487797, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 9
-      _suit: 0
-    Sprite: {fileID: -5381851817413261878, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 9
-      _suit: 1
-    Sprite: {fileID: 2696214034221626940, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 9
-      _suit: 2
-    Sprite: {fileID: -8158273205997960823, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 9
-      _suit: 3
-    Sprite: {fileID: -5895191231709818157, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 10
-      _suit: 0
-    Sprite: {fileID: 5390129371266227295, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 10
-      _suit: 1
-    Sprite: {fileID: -2642393358525368334, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 10
-      _suit: 2
-    Sprite: {fileID: 3042023047814558122, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 10
-      _suit: 3
-    Sprite: {fileID: 8367830406354533065, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 11
-      _suit: 0
-    Sprite: {fileID: 6985626698306143173, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 11
-      _suit: 1
-    Sprite: {fileID: 1269540525142108225, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 11
-      _suit: 2
-    Sprite: {fileID: 6413020478584453356, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 11
-      _suit: 3
-    Sprite: {fileID: -5906973516983679737, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 12
-      _suit: 0
-    Sprite: {fileID: 2455660249822621566, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 12
-      _suit: 1
-    Sprite: {fileID: 7785628452164488187, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 12
-      _suit: 2
-    Sprite: {fileID: -100600239254619610, guid: e3379020059dd4348848e89f19da3354, type: 3}
-  - Card:
-      _value: 12
-      _suit: 3
-    Sprite: {fileID: -3253330834931219228, guid: e3379020059dd4348848e89f19da3354, type: 3}
+  _whiteCard: {fileID: 21300000, guid: 0fdd1a928f74ef84aacf86177ef772e6, type: 3}
+  _defaultSprite: {fileID: 21300000, guid: 62bbe84086402ca498f8f4563dcea790, type: 3}
+  _cardValues:
+  - Value: 0
+    Texture: {fileID: 2800000, guid: 2495689e524c8c44090a61b932260d17, type: 3}
+  - Value: 1
+    Texture: {fileID: 2800000, guid: 6d1a7277613094b4e872f707bddfabf0, type: 3}
+  - Value: 2
+    Texture: {fileID: 2800000, guid: 3422c4f0b2650794eabbf4a5495a4cc3, type: 3}
+  - Value: 3
+    Texture: {fileID: 2800000, guid: b8f40a5ad5c3ad140b2302bd139a6d7a, type: 3}
+  - Value: 4
+    Texture: {fileID: 2800000, guid: 61f4e172fbead674aaddebf45ef1c3cc, type: 3}
+  - Value: 5
+    Texture: {fileID: 2800000, guid: c89ca191e04cd674f9f41dd45a253a5a, type: 3}
+  - Value: 6
+    Texture: {fileID: 2800000, guid: d4a7eb207c6c4274a8d9ae320af1bc3b, type: 3}
+  - Value: 7
+    Texture: {fileID: 2800000, guid: 23fc0ae0d0919294c992fae7005d3699, type: 3}
+  - Value: 8
+    Texture: {fileID: 2800000, guid: 91413c55bb6e28c4e8c251676b41b7ab, type: 3}
+  - Value: 9
+    Texture: {fileID: 2800000, guid: 19b1d04565f8a7e4f96b1e1cfa78edb6, type: 3}
+  - Value: 10
+    Texture: {fileID: 2800000, guid: 38965a5f0c4479c43a2b8114c0156b00, type: 3}
+  - Value: 11
+    Texture: {fileID: 2800000, guid: 391f41b5434deaa4c8eb6d81e774c6b6, type: 3}
+  - Value: 12
+    Texture: {fileID: 2800000, guid: 8537d2ce27668154e92c979f9daba5a9, type: 3}
+  _cardSuits:
+  - Suit: 0
+    Color: {r: 0.7254902, g: 0, b: 0.27450982, a: 1}
+    Texture: {fileID: 2800000, guid: f14d346aeddda1f40ae20f33548ab61c, type: 3}
+  - Suit: 1
+    Color: {r: 0.8901961, g: 0.5019608, b: 0, a: 1}
+    Texture: {fileID: 2800000, guid: 40fb81e8b6ae8f14ea50f4b3f1516d00, type: 3}
+  - Suit: 2
+    Color: {r: 0, g: 0.52156866, b: 0.29411766, a: 1}
+    Texture: {fileID: 2800000, guid: 7988118a3338b6f41983399da05048da, type: 3}
+  - Suit: 3
+    Color: {r: 0.078431375, g: 0.078431375, b: 0.078431375, a: 1}
+    Texture: {fileID: 2800000, guid: 89c162d2155003941b217024a9c57104, type: 3}

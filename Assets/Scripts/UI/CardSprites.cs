@@ -9,22 +9,55 @@ namespace UI
     internal sealed class CardSprites : ScriptableObject
     {
         [Serializable]
-        private struct CardSpriteInfo
+        private struct CardValueInfo
         {
-            public Card Card;
-            public Sprite Sprite;
+            public Value Value;
+            public Texture Texture;
+        }
+        
+        [Serializable]
+        private struct CardSuitInfo
+        {
+            public Suit Suit;
+            public Color Color;
+            public Texture Texture;
+        }
+        
+        [Serializable] // Для иконок королей/вальтов/дам
+        private struct CardFigureInfo
+        {
+            public Value Value;
+            public Texture Texture;
         }
 
+        [SerializeField] private Sprite _whiteCard;
         [SerializeField] private Sprite _defaultSprite;
-        [SerializeField] private CardSpriteInfo[] _cardSprites;
+        [SerializeField] private CardValueInfo[] _cardValues;
+        [SerializeField] private CardSuitInfo[] _cardSuits;
 
+        public Sprite GetWhiteCard() => _whiteCard;
+        
         public Sprite GetDefaultSprite() => _defaultSprite;
-
-        public Sprite GetCardSprite(Card card)
+        
+        public Texture GetValueTexture(Value value)
         {
-            CardSpriteInfo spriteInfo = _cardSprites.First(info => info.Card.EqualsByValueAndSuit(card));
+            CardValueInfo valueInfo = _cardValues.First(info => info.Value == value);
 
-            return spriteInfo.Sprite;
+            return valueInfo.Texture;
+        }
+
+        public Texture GetSuitTexture(Suit suit)
+        {
+            CardSuitInfo suitInfo = _cardSuits.First(info => info.Suit == suit);
+
+            return suitInfo.Texture;
+        }
+        
+        public Color GetSuitColor(Suit suit)
+        {
+            CardSuitInfo suitInfo = _cardSuits.First(info => info.Suit == suit);
+
+            return suitInfo.Color;
         }
     }
 }
