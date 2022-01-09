@@ -31,13 +31,13 @@ namespace UI
         }
 
         [SerializeField] private Texture _whiteCard;
-        [SerializeField] private Texture _CardShort;
+        [SerializeField] private Texture _cardShirt;
         [SerializeField] private CardValueInfo[] _cardValues;
         [SerializeField] private CardSuitInfo[] _cardSuits;
 
         public Texture GetWhiteCard() => _whiteCard;
         
-        public Texture GetCardShort() => _CardShort;
+        public Texture GetCardShirt() => _cardShirt;
         
         public Texture GetValueTexture(Value value)
         {

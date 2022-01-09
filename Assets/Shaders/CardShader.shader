@@ -62,33 +62,36 @@ Shader "Custom/CardShader"
                           (UV.y - 0.5) / scale + 0.5);
         }
 
-        float4 CalculateColor(sampler2D tex, float3 color, float2 uv, float sizeRatio, float aspectRatio)
+        float4 CalculateColor(sampler2D tex, float4 tint, float2 uv, float sizeRatio, float aspectRatio)
         {
             float2 scaledUV = ScaleUV(uv, sizeRatio, aspectRatio);
-            float4 valueColor = tex2D(tex, scaledUV.xy);
-            valueColor.rgb = color.rgb;
+            float4 color = tex2D(tex, scaledUV.xy);
+            color *= tint;
             
-            return valueColor;
+            return color;
         }
 
         void surf (Input IN, inout SurfaceOutput o)
         {
             const float aspect = _MainTex_TexelSize.z / _MainTex_TexelSize.w;
 
-            float4 valueColor = CalculateColor(_ValueTex, _SuitColor.rgb, IN.uv_ValueTex, _ValueSizeRatio, aspect);
-            float4 suitColor = CalculateColor(_SuitTex, _SuitColor.rgb, IN.uv_SuitTex, _SuitSizeRatio, aspect);
-            float4 figureColor = CalculateColor(_FigureTex, _FigureTint.rgb, IN.uv_FigureTex, _FigureSizeRatio, aspect);
+            float4 valueColor = CalculateColor(_ValueTex, _SuitColor, IN.uv_ValueTex, _ValueSizeRatio, aspect);
+            float4 suitColor = CalculateColor(_SuitTex, _SuitColor, IN.uv_SuitTex, _SuitSizeRatio, aspect);
+            float4 figureColor = CalculateColor(_FigureTex, _FigureTint, IN.uv_FigureTex, _FigureSizeRatio, aspect);
 
             float4 mainColor = tex2D(_MainTex, IN.uv_MainTex);
+
+            float a = mainColor.a;
+
+            if (mainColor.a == 0)
+                discard;
+            
             mainColor = lerp(mainColor, valueColor, valueColor.a);
             mainColor = lerp(mainColor, suitColor, suitColor.a);
             mainColor = lerp(mainColor, figureColor, figureColor.a);
 
-            if (mainColor.a == 0)
-                discard;
-
             o.Albedo = mainColor;
-            o.Alpha = mainColor.a;
+            o.Alpha = a;
         }
         ENDCG
     }
