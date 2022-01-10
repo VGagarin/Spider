@@ -43,13 +43,13 @@ MonoBehaviour:
     Texture: {fileID: 2800000, guid: 8537d2ce27668154e92c979f9daba5a9, type: 3}
   _cardSuits:
   - Suit: 0
-    Color: {r: 0.7254902, g: 0, b: 0.27450982, a: 1}
+    Color: {r: 0.5943396, g: 0.07008721, b: 0.07008721, a: 1}
     Texture: {fileID: 2800000, guid: f14d346aeddda1f40ae20f33548ab61c, type: 3}
   - Suit: 1
     Color: {r: 0.8901961, g: 0.5019608, b: 0, a: 1}
     Texture: {fileID: 2800000, guid: 40fb81e8b6ae8f14ea50f4b3f1516d00, type: 3}
   - Suit: 2
-    Color: {r: 0, g: 0.52156866, b: 0.29411766, a: 1}
+    Color: {r: 0, g: 0.4433962, b: 0.25003546, a: 1}
     Texture: {fileID: 2800000, guid: 7988118a3338b6f41983399da05048da, type: 3}
   - Suit: 3
     Color: {r: 0.078431375, g: 0.078431375, b: 0.078431375, a: 1}

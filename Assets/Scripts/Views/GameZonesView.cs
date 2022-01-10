@@ -69,8 +69,8 @@ namespace Views
             
             float distanceBetweenColumns = (bounds.y - bounds.x) / (pointsCount + 1);
             
-            bounds.x += distanceBetweenColumns / 2f;
-            bounds.y -= distanceBetweenColumns / 2f;
+            bounds.x += distanceBetweenColumns / 1.8f;
+            bounds.y -= distanceBetweenColumns / 1.8f;
             
             float maxDistanceBetweenColumns = SpiderSettings.DealingSettings.MaxDistanceBetweenColumns;
             if (distanceBetweenColumns > maxDistanceBetweenColumns)
