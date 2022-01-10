@@ -41,9 +41,8 @@ namespace ViewModels
             {
                 int columnId = i % _gameRules.Columns;
                 float delay = _dealingSettings.DelayBetweenCardsDeal * i;
-                bool targetStateIsOpen = _gameRules.CardsToDeal - i <= _gameRules.CardsToOpen;
                 
-                BaseCardMoveData baseMoveData = CreateBaseMoveData(cards[i].Id, delay, columnId, targetStateIsOpen);
+                BaseCardMoveData baseMoveData = CreateBaseMoveData(cards[i].Id, delay, columnId);
                 
                 _cardsModel.MoveCard(baseMoveData);
             }
@@ -59,12 +58,12 @@ namespace ViewModels
                 int columnId = i % _gameRules.Columns;
                 float delay = _dealingSettings.DelayBetweenCardsDeal * i;
 
-                BaseCardMoveData baseMoveData = CreateBaseMoveData(cardsToDeal[i].Id, delay, columnId, true);
+                BaseCardMoveData baseMoveData = CreateBaseMoveData(cardsToDeal[i].Id, delay, columnId);
                 _cardsModel.MoveCard(baseMoveData);
             }
         }
 
-        private BaseCardMoveData CreateBaseMoveData(int cardId, float delay, int columnId, bool targetStateIsOpen)
+        private BaseCardMoveData CreateBaseMoveData(int cardId, float delay, int columnId)
         {
             return new BaseCardMoveData
             {
@@ -73,7 +72,6 @@ namespace ViewModels
                 ColumnId = columnId,
                 SourceZone = CardsZone.Waiting,
                 TargetZone = CardsZone.Main,
-                TargetStateIsOpen = targetStateIsOpen
             };
         }
 

@@ -12,7 +12,7 @@ namespace Game
         public static bool HasEndedSequenceCollected(List<Card> column, out List<Card> potentialEndedSequence)
         {
             potentialEndedSequence = null;
-            
+
             (Value lastValue, Suit suit) = column.Last();
             if (lastValue == Value.Ace && column.Count >= Values.Length)
             {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Model;
 using Game.Settings;
-using UnityEngine;
 
 namespace Game
 {
@@ -27,10 +26,10 @@ namespace Game
         public void MoveCard(ref CardMoveData moveData)
         {
             if (moveData.SourceZone == CardsZone.Main)
-                OpenPreviousCardIfNeeded(moveData.CardToMove);
+                OpenPreviousCardIfNeeded(moveData.CardToMoveId);
 
             if (moveData.TargetZone == CardsZone.Main)
-                MoveCardToMain(moveData);
+                MoveCardToMain(ref moveData);
                 
             if (moveData.TargetZone == CardsZone.Discard)
                 MoveCardToDiscard(ref moveData);
@@ -38,47 +37,49 @@ namespace Game
 
         public int GetColumnLength(int columnId) => _mainZone[columnId].Count;
         
-        public List<Card> GetColumn(int columnId) => _mainZone[columnId];
+        public List<Card> GetColumnById(int columnId) => _mainZone[columnId];
 
-        public bool IsTurnAvailable(Card card, int targetColumnIndex)
+        public bool IsTurnAvailable(int cardId, int targetColumnId)
         {
-            int sourceColumnId = FindColumn(card);
+            int sourceColumnId = FindColumn(cardId);
 
-            if (targetColumnIndex == sourceColumnId)
+            if (targetColumnId == sourceColumnId)
                 return false;
 
-            if (!_mainZone[targetColumnIndex].Any())
+            if (!_mainZone[targetColumnId].Any())
                 return true;
 
-            Card targetCard = _mainZone[targetColumnIndex].Last();
-            return CardSequenceChecker.IsTurnAvailable(card, targetCard);
+            Card targetCard = _mainZone[targetColumnId].Last();
+            Card cardToMove = _mainZone[sourceColumnId].Find(card => card.Id == cardId);
+            
+            return CardSequenceChecker.IsTurnAvailable(cardToMove, targetCard);
         }
         
-        public int FindColumn(Card card)
+        public int FindColumn(int cardId)
         {
             for (int index = 0; index < _mainZone.Length; index++)
             {
                 List<Card> column = _mainZone[index];
-                if (column.Contains(card))
+                if (column.Any(card => card.Id == cardId))
                     return index;
             }
 
             throw new Exception("Column not found");
         }
 
-        public bool CardCanBeCaptured(Card card)
+        public bool CardCanBeCaptured(int cardId)
         {
-            List<Card> column = GetColumn(card);
-            int cardRow = column.IndexOf(card);
+            List<Card> column = GetColumnByCardId(cardId);
+            int cardRow = column.FindIndex(card => card.Id == cardId);
 
             return CardSequenceChecker.CardCanBeCaptured(column, cardRow);
         }
         
-        public CardsZone GetCardZone(Card card)
+        public CardsZone GetCardZone(int cardId)
         {
-            if (_waitingZone.Contains(card))
+            if (_waitingZone.Any(card => card.Id == cardId))
                 return CardsZone.Waiting;
-            if (_discardZone.Contains(card))
+            if (_discardZone.Any(card => card.Id == cardId))
                 return CardsZone.Discard;
 
             return CardsZone.Main;
@@ -86,32 +87,40 @@ namespace Game
 
         public List<Card> GetCardsInWaiting() => _waitingZone;
 
-        public bool HasEndedSequenceCollected(int columnId, out List<Card> potentialEndedSequence)
+        public bool HasEndedSequenceCollected(int cardId, out List<Card> potentialEndedSequence)
         {
-            List<Card> column = GetColumn(columnId);
+            potentialEndedSequence = null;
+            Card card = FindCardInZone(cardId, CardsZone.Main);
+            if (card.Value != Value.Ace)
+                return false;
+
+            List<Card> column = GetColumnByCardId(cardId);
             return CardSequenceChecker.HasEndedSequenceCollected(column, out potentialEndedSequence);
         }
         
-        private List<Card> GetColumn(Card card) => _mainZone[FindColumn(card)];
+        private List<Card> GetColumnByCardId(int cardId) => _mainZone[FindColumn(cardId)];
         
-        private void MoveCardToMain(CardMoveData moveData)
+        private void MoveCardToMain(ref CardMoveData moveData)
         {
-            Card card = moveData.CardToMove;
+            Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZone);
 
             if (moveData.SourceZone == CardsZone.Waiting)
+            {
                 _waitingZone.Remove(card);
-            if (moveData.SourceZone == CardsZone.Main)
-                _mainZone[FindColumn(card)].Remove(card);
+                OpenCardIfNeeded(ref card);
+            }
             
-            SetIsOpenToCard(ref card, moveData.TargetStateIsOpen);
+            if (moveData.SourceZone == CardsZone.Main)
+                _mainZone[FindColumn(card.Id)].Remove(card);
+            
             _mainZone[moveData.ColumnId].Add(card);
         }
 
         private void MoveCardToDiscard(ref CardMoveData moveData)
         {
-            Card card = moveData.CardToMove;
+            Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZone);
             
-            List<Card> column = GetColumn(card);
+            List<Card> column = GetColumnByCardId(card.Id);
             column.Remove(card);
 
             moveData.MoveCompleted += () =>
@@ -121,11 +130,11 @@ namespace Game
             };
         }
         
-        private void OpenPreviousCardIfNeeded(Card cardToMove)
+        private void OpenPreviousCardIfNeeded(int cardId)
         {
-            int sourceColumnId = FindColumn(cardToMove);
-            List<Card> sourceColumn = GetColumn(sourceColumnId);
-            int sourceCardIndex = sourceColumn.IndexOf(cardToMove);
+            int sourceColumnId = FindColumn(cardId);
+            List<Card> sourceColumn = GetColumnById(sourceColumnId);
+            int sourceCardIndex = sourceColumn.FindIndex(card => card.Id == cardId);
             if (sourceCardIndex == 0 || sourceColumn[sourceCardIndex - 1].IsOpen) 
                 return;
             
@@ -133,11 +142,31 @@ namespace Game
             SetIsOpenToCard(ref card, true);
             sourceColumn[sourceCardIndex - 1] = card;
         }
+        
+        private void OpenCardIfNeeded(ref Card card)
+        {
+            int cardsInWaiting = _waitingZone.Count;
+
+            GameRules rules = SpiderSettings.GameRules;
+            if (cardsInWaiting < rules.CardsInDeck - rules.CardsToDeal + rules.CardsToOpen)
+                SetIsOpenToCard(ref card, true);
+        }
 
         private void SetIsOpenToCard(ref Card card, bool isOpen)
         {
             card.IsOpen = isOpen;
             _cardStateChanged?.Invoke(card);
+        }
+
+        private Card FindCardInZone(int cardId, CardsZone zone)
+        {
+            if (zone == CardsZone.Waiting)
+                return _waitingZone.Find(card => card.Id == cardId);
+            if (zone == CardsZone.Discard)
+                return _discardZone.Find(card => card.Id == cardId);
+
+            int column = FindColumn(cardId);
+            return _mainZone[column].Find(card => card.Id == cardId);
         }
 
         private void InitializeMainZone()

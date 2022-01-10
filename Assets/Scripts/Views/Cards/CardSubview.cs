@@ -1,5 +1,4 @@
-﻿using System;
-using Game.Model;
+﻿using Game.Model;
 using UI;
 using UnityEngine;
 using Views.Base;
@@ -63,7 +62,8 @@ namespace Views.Cards
             {
                 CardShaderChanger.HideCard(_renderer.material, _cardSprites);
             }
-
+            
+            _card.IsOpen = isOpen;
             IsMovable = isOpen;
         }
     }

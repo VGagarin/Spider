@@ -26,16 +26,6 @@ namespace Game
                 Shuffle(ref _cards);
         }
         
-        public Card GetCardById(int id)
-        {
-            return _cardById[id];
-        }
-
-        public void SwapCards(int i1, int i2)
-        {
-            (_cards[i1], _cards[i2]) = (_cards[i2], _cards[i1]);
-        }
-
         private void CreateDeck(List<Suit> suits)
         {
             _cards = new Card[SpiderSettings.GameRules.CardsInDeck];

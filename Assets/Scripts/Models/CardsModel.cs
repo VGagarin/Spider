@@ -9,7 +9,6 @@ namespace Models
 {
     internal class CardsModel : IModel
     {
-        private Deck _deck;
         private GameField _gameField;
         
         public event Action<Deck> DeckCreated;
@@ -18,10 +17,9 @@ namespace Models
         
         public void SetDeck(Deck deck)
         {
-            _deck = deck;
-            _gameField = new GameField(CardStateChanged, _deck.Cards);
+            _gameField = new GameField(CardStateChanged, deck.Cards);
             
-            DeckCreated?.Invoke(_deck);
+            DeckCreated?.Invoke(deck);
         }
 
         public void MoveCard(BaseCardMoveData baseMoveData)
@@ -33,35 +31,29 @@ namespace Models
 
         public bool PerformTurnIfPossible(int cardId, int targetColumnId)
         {
-            Card card = _deck.GetCardById(cardId);
-            
-            bool isTurnAvailable = _gameField.IsTurnAvailable(card, targetColumnId);
+            bool isTurnAvailable = _gameField.IsTurnAvailable(cardId, targetColumnId);
             if (!isTurnAvailable)
                 return false;
             
-            int sourceColumnId = _gameField.FindColumn(card);
+            int sourceColumnId = _gameField.FindColumn(cardId);
             List<Card> cardColumn = GetCardColumn(cardId, sourceColumnId);
             MoveCardColumn(cardColumn, CardsZone.Main, targetColumnId);
 
             return true;
         }
         
-        public int GetCardColumnId(int cardId) => _gameField.FindColumn(_deck.GetCardById(cardId));
+        public int GetCardColumnId(int cardId) => _gameField.FindColumn(cardId);
 
-        public bool CardCanBeCaptured(int cardId) => _gameField.CardCanBeCaptured(_deck.GetCardById(cardId));
+        public bool CardCanBeCaptured(int cardId) => _gameField.CardCanBeCaptured(cardId);
 
         public List<Card> GetCardColumn(int cardId, int columnId)
         {
-            List<Card> column = _gameField.GetColumn(columnId);
-            int cardRow = column.IndexOf(_deck.GetCardById(cardId));
+            List<Card> column = _gameField.GetColumnById(columnId);
+            int cardRow = column.FindIndex(card => card.Id == cardId);
             return column.GetRange(cardRow, column.Count - cardRow);
         }
         
-        public CardsZone GetCardZone(int cardId)
-        {
-            Card card = _deck.GetCardById(cardId);
-            return _gameField.GetCardZone(card);
-        }
+        public CardsZone GetCardZone(int cardId) => _gameField.GetCardZone(cardId);
 
         public List<Card> GetCardsInWaitingZone() => _gameField.GetCardsInWaiting();
 
@@ -74,7 +66,6 @@ namespace Models
                 {
                     CardId = card.Id,
                     DelayBeforeMove = ++i * delay,
-                    TargetStateIsOpen = true,
                     SourceZone = CardsZone.Main,
                     TargetZone = targetZone,
                     ColumnId = columnId
@@ -84,16 +75,16 @@ namespace Models
         
         private void MoveCard(CardMoveData moveData)
         {
-            if (moveData.TargetZone == CardsZone.Main && moveData.CardToMove.Value == Value.Ace)
-                moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.ColumnId);
+            if (moveData.TargetZone == CardsZone.Main)
+                moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.CardToMoveId);
             
             _gameField.MoveCard(ref moveData);
             CardMoved?.Invoke(moveData);
         }
 
-        private void CheckColumnForEndingSequence(int columnId)
+        private void CheckColumnForEndingSequence(int cardId)
         {
-            if (_gameField.HasEndedSequenceCollected(columnId, out List<Card> potentialEndedSequence))
+            if (_gameField.HasEndedSequenceCollected(cardId, out List<Card> potentialEndedSequence))
             {
                 float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
                 potentialEndedSequence.Reverse();
@@ -107,14 +98,13 @@ namespace Models
 
             return new CardMoveData
             {
-                CardToMove = _deck.GetCardById(baseMoveData.CardId),
+                CardToMoveId = baseMoveData.CardId,
                 DelayBeforeMove = baseMoveData.DelayBeforeMove,
                 TargetLayer = rowId,
                 SourceZone = baseMoveData.SourceZone,
                 TargetZone = baseMoveData.TargetZone,
                 ColumnId = baseMoveData.ColumnId,
-                RowId = rowId,
-                TargetStateIsOpen = baseMoveData.TargetStateIsOpen
+                RowId = rowId
             };
         }
     }

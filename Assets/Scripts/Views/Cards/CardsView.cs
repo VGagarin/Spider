@@ -54,7 +54,7 @@ namespace Views.Cards
         
         private void OnCardMoved(CardMoveData moveData, CardPositionData positionData)
         {
-            CardSubview card = _cardSubviewById[moveData.CardToMove.Id];
+            CardSubview card = _cardSubviewById[moveData.CardToMoveId];
 
             _cardsAttacher.Clear();
             
@@ -69,8 +69,10 @@ namespace Views.Cards
                 RelativeTime = 0.3f
             };
 
+
+            bool isMovable = card.IsMovable;
             card.IsMovable = false;
-            moveData.MoveCompleted += () => card.IsMovable = true;
+            moveData.MoveCompleted += () => card.IsMovable = isMovable;
             
             _cardMover.MoveToLocalPositionAfterDelay(delayBeforeMove, targetPosition, cardTransform,
                 moveData.MoveCompleted, insertAction);
