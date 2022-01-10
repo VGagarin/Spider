@@ -47,11 +47,18 @@ namespace Views
 
         private void UpdatePositions()
         {
-            Vector2 bounds = FindBounds();
+            Rect screenBounds = FindScreenBounds();
+            Vector2 bounds = FindMainZoneBounds(screenBounds);
             
+            UpdateMainZonePositions(bounds);
+            UpdateDiscardPosition(screenBounds);
+            UpdateWaitingPosition(screenBounds);
+        }
+
+        private void UpdateMainZonePositions(Vector2 bounds)
+        {
             Vector3 start = _mainZonePoint.position;
             start.x = bounds.x;
-            
             Vector3 end = start;
             end.x = bounds.y;
             
@@ -60,40 +67,67 @@ namespace Views
                 _columnPoints[i].transform.position = Vector3.Lerp(start, end, (float)i / (_columnPoints.Length - 1));
             }
         }
-        
-        private Vector2 FindBounds()
+
+        private void UpdateDiscardPosition(Rect bounds)
         {
-            Vector2 bounds = FindScreenBounds();
+            float leftPaddingRatio = SpiderSettings.GameFieldLayoutSettings.LeftPaddingForDiscard;
+            float bottomPaddingRatio = SpiderSettings.GameFieldLayoutSettings.BottomPaddingForDiscard;
+
+            Vector3 position = _discardZonePoint.position;
             
+            position.x = Mathf.Lerp(bounds.xMin, bounds.xMax, leftPaddingRatio);
+            position.y = Mathf.Lerp(bounds.yMin, bounds.yMax, 1f - bottomPaddingRatio);
+
+            _discardZonePoint.position = position;
+        }
+
+        private void UpdateWaitingPosition(Rect bounds)
+        {
+            float rightPaddingRatio = SpiderSettings.GameFieldLayoutSettings.RightPaddingForWaiting;
+            float bottomPaddingRatio = SpiderSettings.GameFieldLayoutSettings.BottomPaddingForWaiting;
+            
+            Vector3 position = _waitingZonePoint.position;
+            
+            position.x = Mathf.Lerp(bounds.xMin, bounds.xMax, 1f - rightPaddingRatio);
+            position.y = Mathf.Lerp(bounds.yMin, bounds.yMax, 1f - bottomPaddingRatio);
+
+            _waitingZonePoint.position = position;
+        }
+
+        private Vector2 FindMainZoneBounds(Rect screenBounds)
+        {
+            Vector2 horizontalBounds = new Vector2(screenBounds.xMin, screenBounds.xMax);
             int pointsCount = _columnPoints.Length;
             
-            float distanceBetweenColumns = (bounds.y - bounds.x) / (pointsCount + 1);
+            float distanceBetweenColumns = (horizontalBounds.y - horizontalBounds.x) / (pointsCount + 1);
             
-            bounds.x += distanceBetweenColumns / 1.8f;
-            bounds.y -= distanceBetweenColumns / 1.8f;
+            horizontalBounds.x += distanceBetweenColumns / 1.8f;
+            horizontalBounds.y -= distanceBetweenColumns / 1.8f;
             
-            float maxDistanceBetweenColumns = SpiderSettings.DealingSettings.MaxDistanceBetweenColumns;
+            float maxDistanceBetweenColumns = SpiderSettings.GameFieldLayoutSettings.MaxDistanceBetweenColumns;
             if (distanceBetweenColumns > maxDistanceBetweenColumns)
             {
                 float halfDelta = (distanceBetweenColumns - maxDistanceBetweenColumns) / 2f * (pointsCount + 1);
-                bounds.x += halfDelta;
-                bounds.y -= halfDelta;
+                horizontalBounds.x += halfDelta;
+                horizontalBounds.y -= halfDelta;
             }
             
-            return bounds;
+            return horizontalBounds;
         }
 
-        private Vector2 FindScreenBounds()
+        private Rect FindScreenBounds()
         {
             Camera mainCamera = Camera.main;
 
             if (mainCamera == null)
                 throw new Exception("Camera not found");
 
-            float left = mainCamera.ScreenToWorldPoint(new Vector3 (0f, 0f, 0)).x;
-            float right = mainCamera.ScreenToWorldPoint(new Vector3(mainCamera.pixelWidth, 0f, 0)).x;
-
-            return new Vector2(left, right);
+            float left = mainCamera.ScreenToWorldPoint(new Vector3 (0f, 0f, 0f)).x;
+            float right = mainCamera.ScreenToWorldPoint(new Vector3(mainCamera.pixelWidth, 0f, 0f)).x;
+            float up = mainCamera.ScreenToWorldPoint(new Vector3(0f, mainCamera.pixelHeight, 0f)).y;
+            float down = mainCamera.ScreenToWorldPoint(new Vector3(0f, 0f, 0)).y;
+            
+            return new Rect(left, up, right - left, down - up);
         }
     }
 }

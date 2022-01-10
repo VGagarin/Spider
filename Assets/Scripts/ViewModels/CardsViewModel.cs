@@ -64,7 +64,10 @@ namespace ViewModels
             IGameZone targetZone = ModelRepository.GetModel<GameZonesModel>().GetZoneByType(cardMoveData.TargetZone);
             Vector3 position = Vector3.zero;
             if (cardMoveData.TargetZone == CardsZone.Main)
-                position = Vector3.up * -cardMoveData.RowId * SpiderSettings.DealingSettings.SmallVerticalOffset;
+            {
+                float offset = cardMoveData.RowId * SpiderSettings.GameFieldLayoutSettings.SmallVerticalOffset;
+                position = Vector3.down * offset;
+            }
 
             CardPositionData positionData = new CardPositionData
             {
