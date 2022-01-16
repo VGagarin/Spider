@@ -72,7 +72,7 @@ namespace ViewModels
                 DelayBeforeMove = delay,
                 ColumnId = columnId,
                 SourceZoneType = GameZoneType.Waiting,
-                TargetZoneType = GameZoneType.Main,
+                TargetZoneType = GameZoneType.Main
             };
         }
 

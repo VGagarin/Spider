@@ -9,16 +9,14 @@ namespace Models.Cards
 {
     internal class GameField
     {
-        private List<Card>[] _mainZone;
-        private List<Card> _waitingZone = new List<Card>();
-        private List<Card> _discardZone = new List<Card>();
+        private MainGameZone _mainZone = new MainGameZone();
+        private WaitingGameZone _waitingZone = new WaitingGameZone();
+        private DiscardGameZone _discardZone = new DiscardGameZone();
 
         private Action<Card> _cardStateChanged;
 
         public GameField(Action<Card> cardStateChanged, IEnumerable<Card> cardsInWaiting)
         {
-            InitializeMainZone();
-            
             _waitingZone.AddRange(cardsInWaiting);
             
             _cardStateChanged += cardStateChanged;
@@ -36,36 +34,24 @@ namespace Models.Cards
                 MoveCardToDiscard(ref moveData);
         }
 
-        public int GetColumnLength(int columnId) => _mainZone[columnId].Count;
+        public int GetColumnLength(int columnId) => _mainZone.ColumnLength(columnId);
         
-        public List<Card> GetColumnById(int columnId) => _mainZone[columnId];
+        public List<Card> GetColumnById(int columnId) => _mainZone.GetColumnById(columnId);
 
         public bool IsTurnAvailable(int cardId, int targetColumnId)
         {
-            int sourceColumnId = FindColumn(cardId);
+            int sourceColumnId = _mainZone.FindColumn(cardId);
 
             if (targetColumnId == sourceColumnId)
                 return false;
 
-            if (!_mainZone[targetColumnId].Any())
+            if (!_mainZone.GetColumnById(targetColumnId).Any())
                 return true;
 
-            Card targetCard = _mainZone[targetColumnId].Last();
-            Card cardToMove = _mainZone[sourceColumnId].Find(card => card.Id == cardId);
+            Card targetCard = _mainZone.GetColumnById(targetColumnId).Last();
+            Card cardToMove = _mainZone.GetColumnById(sourceColumnId).Find(card => card.Id == cardId);
             
             return CardSequenceChecker.IsTurnAvailable(cardToMove, targetCard);
-        }
-        
-        public int FindColumn(int cardId)
-        {
-            for (int index = 0; index < _mainZone.Length; index++)
-            {
-                List<Card> column = _mainZone[index];
-                if (column.Any(card => card.Id == cardId))
-                    return index;
-            }
-
-            throw new Exception("Column not found");
         }
 
         public bool CardCanBeCaptured(int cardId)
@@ -78,15 +64,17 @@ namespace Models.Cards
         
         public GameZoneType GetCardZone(int cardId)
         {
-            if (_waitingZone.Any(card => card.Id == cardId))
+            if (_waitingZone.IsCardExists(cardId))
                 return GameZoneType.Waiting;
-            if (_discardZone.Any(card => card.Id == cardId))
+            if (_discardZone.IsCardExists(cardId))
                 return GameZoneType.Discard;
 
             return GameZoneType.Main;
         }
 
-        public List<Card> GetCardsInWaiting() => _waitingZone;
+        public List<Card> GetCardsInWaiting() => _waitingZone.Cards;
+
+        public int FindColumn(int cardId) => _mainZone.FindColumn(cardId);
 
         public bool HasEndedSequenceCollected(int cardId, out List<Card> potentialEndedSequence)
         {
@@ -99,7 +87,7 @@ namespace Models.Cards
             return CardSequenceChecker.HasEndedSequenceCollected(column, out potentialEndedSequence);
         }
         
-        private List<Card> GetColumnByCardId(int cardId) => _mainZone[FindColumn(cardId)];
+        private List<Card> GetColumnByCardId(int cardId) => _mainZone.GetColumnById(_mainZone.FindColumn(cardId));
         
         private void MoveCardToMain(ref CardMoveData moveData)
         {
@@ -107,27 +95,26 @@ namespace Models.Cards
 
             if (moveData.SourceZoneType == GameZoneType.Waiting)
             {
-                _waitingZone.Remove(card);
+                _waitingZone.RemoveCard(card);
                 OpenCardIfNeeded(ref card);
             }
             
             if (moveData.SourceZoneType == GameZoneType.Main)
-                _mainZone[FindColumn(card.Id)].Remove(card);
+                _mainZone.RemoveCard(card);
             
-            _mainZone[moveData.ColumnId].Add(card);
+            _mainZone.AddCard(card, moveData.ColumnId);
         }
 
         private void MoveCardToDiscard(ref CardMoveData moveData)
         {
             Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZoneType);
             
-            List<Card> column = GetColumnByCardId(card.Id);
-            column.Remove(card);
+            _mainZone.RemoveCard(card);
 
             moveData.MoveCompleted += () =>
             {
                 SetIsOpenToCard(ref card, false);
-                _discardZone.Add(card);
+                _discardZone.AddCard(card);
             };
         }
         
@@ -162,20 +149,11 @@ namespace Models.Cards
         private Card FindCardInZone(int cardId, GameZoneType zoneType)
         {
             if (zoneType == GameZoneType.Waiting)
-                return _waitingZone.Find(card => card.Id == cardId);
+                return _waitingZone.FindCard(cardId);
             if (zoneType == GameZoneType.Discard)
-                return _discardZone.Find(card => card.Id == cardId);
+                return _discardZone.FindCard(cardId);
 
-            int column = FindColumn(cardId);
-            return _mainZone[column].Find(card => card.Id == cardId);
-        }
-
-        private void InitializeMainZone()
-        {
-            _mainZone = new List<Card>[SpiderSettings.GameRules.Columns];
-
-            for (int i = 0; i < _mainZone.Length; i++)
-                _mainZone[i] = new List<Card>();
+            return _mainZone.FindCard(cardId);
         }
 
         ~GameField() => _cardStateChanged = null;
