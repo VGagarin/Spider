@@ -5,8 +5,8 @@
         public int CardId { get; set; }
         public float DelayBeforeMove { get; set; }
         public int ColumnId { get; set; }
-        public CardsZone SourceZone { get; set; }
-        public CardsZone TargetZone { get; set; }
+        public GameZoneType SourceZoneType { get; set; }
+        public GameZoneType TargetZoneType { get; set; }
         public bool TargetStateIsOpen { get; set; }
     }
 }

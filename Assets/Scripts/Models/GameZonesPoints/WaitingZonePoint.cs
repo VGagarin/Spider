@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Models.GameZones
 {
-    internal class DiscardZone : IGameZone
+    internal class WaitingZonePoint : IGameZonePoint
     {
         private readonly Transform _point;
 
-        public CardsZone ZoneType => CardsZone.Discard;
-        
-        public DiscardZone(Transform point)
+        public GameZoneType ZoneTypeType => GameZoneType.Waiting;
+
+        public WaitingZonePoint(Transform point)
         {
             _point = point;
         }

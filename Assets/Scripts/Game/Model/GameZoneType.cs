@@ -1,6 +1,6 @@
 ﻿namespace Game.Model
 {
-    internal enum CardsZone
+    internal enum GameZoneType
     {
         Waiting,
         Main,

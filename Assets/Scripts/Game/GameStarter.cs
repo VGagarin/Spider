@@ -1,6 +1,7 @@
 ﻿using Game.Settings;
 using Models;
 using Models.Base;
+using Models.Cards;
 using UnityEngine;
 using Views;
 using Views.Cards;

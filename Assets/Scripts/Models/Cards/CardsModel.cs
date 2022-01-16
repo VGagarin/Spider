@@ -5,7 +5,7 @@ using Game.Model;
 using Game.Settings;
 using Models.Base;
 
-namespace Models
+namespace Models.Cards
 {
     internal class CardsModel : IModel
     {
@@ -37,7 +37,7 @@ namespace Models
             
             int sourceColumnId = _gameField.FindColumn(cardId);
             List<Card> cardColumn = GetCardColumn(cardId, sourceColumnId);
-            MoveCardColumn(cardColumn, CardsZone.Main, targetColumnId);
+            MoveCardColumn(cardColumn, GameZoneType.Main, targetColumnId);
 
             return true;
         }
@@ -53,11 +53,11 @@ namespace Models
             return column.GetRange(cardRow, column.Count - cardRow);
         }
         
-        public CardsZone GetCardZone(int cardId) => _gameField.GetCardZone(cardId);
+        public GameZoneType GetCardZone(int cardId) => _gameField.GetCardZone(cardId);
 
         public List<Card> GetCardsInWaitingZone() => _gameField.GetCardsInWaiting();
 
-        private void MoveCardColumn(IEnumerable<Card> column, CardsZone targetZone, int columnId = 0, float delay = 0)
+        private void MoveCardColumn(IEnumerable<Card> column, GameZoneType targetZoneType, int columnId = 0, float delay = 0)
         {
             int i = 0;
             foreach (Card card in column)
@@ -66,8 +66,8 @@ namespace Models
                 {
                     CardId = card.Id,
                     DelayBeforeMove = ++i * delay,
-                    SourceZone = CardsZone.Main,
-                    TargetZone = targetZone,
+                    SourceZoneType = GameZoneType.Main,
+                    TargetZoneType = targetZoneType,
                     ColumnId = columnId
                 });
             }
@@ -75,7 +75,7 @@ namespace Models
         
         private void MoveCard(CardMoveData moveData)
         {
-            if (moveData.TargetZone == CardsZone.Main)
+            if (moveData.TargetZoneType == GameZoneType.Main)
                 moveData.MoveCompleted += () => CheckColumnForEndingSequence(moveData.CardToMoveId);
             
             _gameField.MoveCard(ref moveData);
@@ -88,7 +88,7 @@ namespace Models
             {
                 float delayBetweenCards = SpiderSettings.DealingSettings.DelayBetweenCardsDeal;
                 potentialEndedSequence.Reverse();
-                MoveCardColumn(potentialEndedSequence, CardsZone.Discard, delay: delayBetweenCards);
+                MoveCardColumn(potentialEndedSequence, GameZoneType.Discard, delay: delayBetweenCards);
             }
         }
 
@@ -101,8 +101,8 @@ namespace Models
                 CardToMoveId = baseMoveData.CardId,
                 DelayBeforeMove = baseMoveData.DelayBeforeMove,
                 TargetLayer = rowId,
-                SourceZone = baseMoveData.SourceZone,
-                TargetZone = baseMoveData.TargetZone,
+                SourceZoneType = baseMoveData.SourceZoneType,
+                TargetZoneType = baseMoveData.TargetZoneType,
                 ColumnId = baseMoveData.ColumnId,
                 RowId = rowId
             };

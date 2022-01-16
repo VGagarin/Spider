@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GameFieldLayoutSettings
   m_EditorClassIdentifier: 
   _smallVerticalOffset: 0.2
-  _maxDistanceBetweenColumns: 0.55
-  _leftPaddingForDiscard: 0.25
-  _rightPaddingForWaiting: 0.25
-  _bottomPaddingForDiscard: 0.25
-  _bottomPaddingForWaiting: 0.25
+  _maxDistanceBetweenColumns: 1
+  _leftPaddingForDiscard: 0.15
+  _rightPaddingForWaiting: 0.15
+  _bottomPaddingForDiscard: 0.1
+  _bottomPaddingForWaiting: 0.1

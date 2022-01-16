@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Model;
 using Models;
 using Models.Base;
+using Models.Cards;
 using Models.GameZones;
 using UnityEngine;
 using ViewModels.Base;
@@ -61,15 +62,15 @@ namespace ViewModels
         
         public void OnClosedCardClicking(int cardId)
         {
-            CardsZone zone = ModelRepository.GetModel<CardsModel>().GetCardZone(cardId);
+            GameZoneType zoneType = ModelRepository.GetModel<CardsModel>().GetCardZone(cardId);
 
-            if (zone == CardsZone.Waiting)
+            if (zoneType == GameZoneType.Waiting)
                 _inputModel.OnWaitingZoneActivated();
         }
 
         private int FindColumnIndex(Vector3 position)
         {
-            Transform[] columnPositions = ModelRepository.GetModel<GameZonesModel>().MainZonePoints;
+            Transform[] columnPositions = ModelRepository.GetModel<GameZonesPointsModel>().MainZonePoints;
             float[] horizontalPositions = columnPositions.Select(columnPosition => columnPosition.position.x).ToArray();
 
             float halfDistanceBetweenColumns = (horizontalPositions[1] - horizontalPositions[0]) / 2f;

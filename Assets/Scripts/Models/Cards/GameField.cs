@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using Game.Model;
 using Game.Settings;
 
-namespace Game
+namespace Models.Cards
 {
     internal class GameField
     {
@@ -25,13 +26,13 @@ namespace Game
 
         public void MoveCard(ref CardMoveData moveData)
         {
-            if (moveData.SourceZone == CardsZone.Main)
+            if (moveData.SourceZoneType == GameZoneType.Main)
                 OpenPreviousCardIfNeeded(moveData.CardToMoveId);
 
-            if (moveData.TargetZone == CardsZone.Main)
+            if (moveData.TargetZoneType == GameZoneType.Main)
                 MoveCardToMain(ref moveData);
                 
-            if (moveData.TargetZone == CardsZone.Discard)
+            if (moveData.TargetZoneType == GameZoneType.Discard)
                 MoveCardToDiscard(ref moveData);
         }
 
@@ -75,14 +76,14 @@ namespace Game
             return CardSequenceChecker.CardCanBeCaptured(column, cardRow);
         }
         
-        public CardsZone GetCardZone(int cardId)
+        public GameZoneType GetCardZone(int cardId)
         {
             if (_waitingZone.Any(card => card.Id == cardId))
-                return CardsZone.Waiting;
+                return GameZoneType.Waiting;
             if (_discardZone.Any(card => card.Id == cardId))
-                return CardsZone.Discard;
+                return GameZoneType.Discard;
 
-            return CardsZone.Main;
+            return GameZoneType.Main;
         }
 
         public List<Card> GetCardsInWaiting() => _waitingZone;
@@ -90,7 +91,7 @@ namespace Game
         public bool HasEndedSequenceCollected(int cardId, out List<Card> potentialEndedSequence)
         {
             potentialEndedSequence = null;
-            Card card = FindCardInZone(cardId, CardsZone.Main);
+            Card card = FindCardInZone(cardId, GameZoneType.Main);
             if (card.Value != Value.Ace)
                 return false;
 
@@ -102,15 +103,15 @@ namespace Game
         
         private void MoveCardToMain(ref CardMoveData moveData)
         {
-            Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZone);
+            Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZoneType);
 
-            if (moveData.SourceZone == CardsZone.Waiting)
+            if (moveData.SourceZoneType == GameZoneType.Waiting)
             {
                 _waitingZone.Remove(card);
                 OpenCardIfNeeded(ref card);
             }
             
-            if (moveData.SourceZone == CardsZone.Main)
+            if (moveData.SourceZoneType == GameZoneType.Main)
                 _mainZone[FindColumn(card.Id)].Remove(card);
             
             _mainZone[moveData.ColumnId].Add(card);
@@ -118,7 +119,7 @@ namespace Game
 
         private void MoveCardToDiscard(ref CardMoveData moveData)
         {
-            Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZone);
+            Card card = FindCardInZone(moveData.CardToMoveId, moveData.SourceZoneType);
             
             List<Card> column = GetColumnByCardId(card.Id);
             column.Remove(card);
@@ -158,11 +159,11 @@ namespace Game
             _cardStateChanged?.Invoke(card);
         }
 
-        private Card FindCardInZone(int cardId, CardsZone zone)
+        private Card FindCardInZone(int cardId, GameZoneType zoneType)
         {
-            if (zone == CardsZone.Waiting)
+            if (zoneType == GameZoneType.Waiting)
                 return _waitingZone.Find(card => card.Id == cardId);
-            if (zone == CardsZone.Discard)
+            if (zoneType == GameZoneType.Discard)
                 return _discardZone.Find(card => card.Id == cardId);
 
             int column = FindColumn(cardId);

@@ -6,6 +6,7 @@ using Game.Model;
 using Game.Settings;
 using Models;
 using Models.Base;
+using Models.Cards;
 using Models.GameZones;
 using UnityEngine;
 using ViewModels.Base;
@@ -28,7 +29,7 @@ namespace ViewModels
         {
             get
             {
-                Transform[] mainZonePoints = ModelRepository.GetModel<GameZonesModel>().MainZonePoints;
+                Transform[] mainZonePoints = ModelRepository.GetModel<GameZonesPointsModel>().MainZonePoints;
                 return mainZonePoints[1].position.x - mainZonePoints[0].position.x;
             }
         }
@@ -54,16 +55,16 @@ namespace ViewModels
 
         private void OnDeckCreated(Deck deck)
         {
-            WaitingZone waitingZone = ModelRepository.GetModel<GameZonesModel>().WaitingZone;
+            WaitingZonePoint waitingZonePoint = ModelRepository.GetModel<GameZonesPointsModel>().WaitingZonePoint;
 
-            DeckCreated?.Invoke(deck, waitingZone.GetPoint());
+            DeckCreated?.Invoke(deck, waitingZonePoint.GetPoint());
         }
         
         private void OnCardMoved(CardMoveData cardMoveData)
         {
-            IGameZone targetZone = ModelRepository.GetModel<GameZonesModel>().GetZoneByType(cardMoveData.TargetZone);
+            IGameZonePoint targetZonePoint = ModelRepository.GetModel<GameZonesPointsModel>().GetZoneByType(cardMoveData.TargetZoneType);
             Vector3 position = Vector3.zero;
-            if (cardMoveData.TargetZone == CardsZone.Main)
+            if (cardMoveData.TargetZoneType == GameZoneType.Main)
             {
                 float offset = cardMoveData.RowId * SpiderSettings.GameFieldLayoutSettings.SmallVerticalOffset;
                 position = Vector3.down * offset;
@@ -72,7 +73,7 @@ namespace ViewModels
             CardPositionData positionData = new CardPositionData
             {
                 LocalPosition = position,
-                Parent = targetZone.GetPoint(cardMoveData.ColumnId)
+                Parent = targetZonePoint.GetPoint(cardMoveData.ColumnId)
             };
 
             CardMoved?.Invoke(cardMoveData, positionData);

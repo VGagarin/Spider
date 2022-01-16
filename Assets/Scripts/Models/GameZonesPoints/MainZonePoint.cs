@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Models.GameZones
 {
-    internal class MainZone : IGameZone
+    internal class MainZonePoint : IGameZonePoint
     {
         private readonly Transform[] _points;
         
-        public CardsZone ZoneType => CardsZone.Main;
+        public GameZoneType ZoneTypeType => GameZoneType.Main;
         public Transform[] Points => _points;
         
-        public MainZone(Transform[] points)
+        public MainZonePoint(Transform[] points)
         {
             _points = points;
         }

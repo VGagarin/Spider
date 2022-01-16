@@ -7,26 +7,26 @@ namespace ViewModels
 {
     internal class GameZonesViewModel : BaseViewModel
     {
-        private GameZonesModel _gameZonesModel;
+        private GameZonesPointsModel _gameZonesPointsModel;
         
         public GameZonesViewModel()
         {
-            _gameZonesModel = ModelRepository.GetModel<GameZonesModel>();
+            _gameZonesPointsModel = ModelRepository.GetModel<GameZonesPointsModel>();
         }
         
         public void SetColumnPoints(Transform[] points)
         {
-            _gameZonesModel.SetMainZonePoints(points);
+            _gameZonesPointsModel.SetMainZonePoints(points);
         }
         
         public void SetWaitingZonePoint(Transform point)
         {
-            _gameZonesModel.SetWaitingZonePoint(point);
+            _gameZonesPointsModel.SetWaitingZonePoint(point);
         }
 
         public void SetDiscardZonePoint(Transform point)
         {
-            _gameZonesModel.SetDiscardZonePoint(point);
+            _gameZonesPointsModel.SetDiscardZonePoint(point);
         }
     }
 }

@@ -4,6 +4,7 @@ using Game.Model;
 using Game.Settings;
 using Models;
 using Models.Base;
+using Models.Cards;
 using UnityEngine;
 using ViewModels.Base;
 
@@ -70,8 +71,8 @@ namespace ViewModels
                 CardId = cardId,
                 DelayBeforeMove = delay,
                 ColumnId = columnId,
-                SourceZone = CardsZone.Waiting,
-                TargetZone = CardsZone.Main,
+                SourceZoneType = GameZoneType.Waiting,
+                TargetZoneType = GameZoneType.Main,
             };
         }
 

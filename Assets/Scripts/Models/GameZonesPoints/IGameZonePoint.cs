@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Models.GameZones
 {
-    internal interface IGameZone
+    internal interface IGameZonePoint
     {
-        CardsZone ZoneType { get; }
+        GameZoneType ZoneTypeType { get; }
 
         Transform GetPoint(int columnId = 0);
     }

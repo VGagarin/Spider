@@ -3,6 +3,7 @@ using Game;
 using Game.Model;
 using Models;
 using Models.Base;
+using Models.Cards;
 
 namespace MockTesting
 {
